@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Services\Http\Request;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
 /**
@@ -12,5 +13,25 @@ use Symfony\Component\Console\Command\Command as BaseCommand;
  */
 abstract class Command extends BaseCommand
 {
-    //
+    /**
+     * Exit success code
+     */
+    const EXIT_SUCCESS = 0;
+
+    /**
+     * Http request object
+     *
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * Command constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct(null);
+
+        $this->request = new Request;
+    }
 }

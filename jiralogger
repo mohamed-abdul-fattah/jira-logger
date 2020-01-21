@@ -12,4 +12,6 @@ define('APP_VERSION', '1.0.0');
 
 $app = new \Symfony\Component\Console\Application( 'Jira Logger', APP_VERSION );
 
+$app->add(new \App\Commands\ConnectCommand);
+
 $app->run();
