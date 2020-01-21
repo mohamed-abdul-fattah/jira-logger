@@ -1,0 +1,15 @@
+{
+    "name": "mohamed/jira-logger",
+    "description": "Jira Logger CLI Tool",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohamed Abdul-Fattah",
+            "email": "csmohamed8@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0"
+    }
+}
