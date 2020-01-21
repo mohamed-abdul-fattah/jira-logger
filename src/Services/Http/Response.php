@@ -2,6 +2,8 @@
 
 namespace App\Services\Http;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Class Response
  *
@@ -10,5 +12,18 @@ namespace App\Services\Http;
  */
 class Response
 {
-    //
+    /**
+     * @var ResponseInterface
+     */
+    protected $response;
+
+    /**
+     * Response constructor.
+     *
+     * @param ResponseInterface $response
+     */
+    public function __construct(ResponseInterface $response)
+    {
+        $this->response = $response;
+    }
 }

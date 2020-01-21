@@ -2,6 +2,8 @@
 
 namespace App\Services\Http;
 
+use Guzzle\Http\Client;
+
 /**
  * Class Request
  *
@@ -10,5 +12,18 @@ namespace App\Services\Http;
  */
 class Request
 {
-    //
+    /**
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * Request constructor.
+     */
+    public function __construct()
+    {
+        $this->client = new Client([
+            'timeout'  => 30,
+        ]);
+    }
 }
