@@ -2,7 +2,7 @@
 
 namespace App\Services\Validators;
 
-use Symfony\Component\Console\Exception\RuntimeException;
+use App\Exceptions\RuntimeException;
 
 /**
  * Class ConnectValidator
