@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Http;
+namespace App\Http;
 
 use Guzzle\Http\Client;
 
