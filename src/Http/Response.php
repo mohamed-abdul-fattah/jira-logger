@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
  * @since  1.0.0
  */
-class Response
+class Response implements IResponse
 {
     /**
      * @var ResponseInterface
@@ -25,5 +25,24 @@ class Response
     public function __construct(ResponseInterface $response)
     {
         $this->response = $response;
+    }
+
+    /**
+     *
+     * TODO: Add json encoder
+     */
+    public function body()
+    {
+        return json_decode($this->response->getBody());
+    }
+
+    /**
+     * Get response HTTP status code
+     *
+     * @return int
+     */
+    public function getHttpStatus(): int
+    {
+        return $this->response->getStatusCode();
     }
 }
