@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Services\Json;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -28,12 +29,14 @@ class Response implements IResponse
     }
 
     /**
+     * Decode response JSON body
      *
-     * TODO: Add json encoder
+     * @return mixed
+     * @throws \App\Exceptions\JsonException
      */
     public function body()
     {
-        return json_decode($this->response->getBody());
+        return Json::decode($this->response->getBody());
     }
 
     /**
