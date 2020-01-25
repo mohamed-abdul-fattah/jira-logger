@@ -18,7 +18,7 @@ class ConnectValidator
      * @param  string $username
      * @return string
      */
-    public function validateUsername($username)
+    public function validateUsername($username): string
     {
         if (empty($username)) {
             throw new RuntimeException('Username cannot be empty!');
@@ -37,7 +37,7 @@ class ConnectValidator
      * @param  string $password
      * @return string
      */
-    public function validatePassword($password)
+    public function validatePassword($password): string
     {
         if (empty($password)) {
             throw new RuntimeException('Password cannot be empty!');
