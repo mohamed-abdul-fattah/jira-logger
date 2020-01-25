@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Services\Connect\IConnect;
 use App\Services\Validators\ConnectValidator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\Question;
@@ -16,6 +17,23 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ConnectCommand extends Command
 {
+    /**
+     * @var IConnect
+     */
+    protected $connectService;
+
+    /**
+     * ConnectCommand constructor.
+     *
+     * @param IConnect $service
+     */
+    public function __construct(IConnect $service)
+    {
+        parent::__construct();
+
+        $this->connectService = $service;
+    }
+
     /**
      * Configure connect command
      */
@@ -67,6 +85,9 @@ class ConnectCommand extends Command
             $password = $helper->ask($input, $output, $question);
         }
 
+        $res = $this->connectService
+                    ->setDispatcher($this->request)
+                    ->connect($username, $password);
         return self::EXIT_SUCCESS;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Services\Http\Request;
+use App\Http\Request;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
 /**
@@ -17,6 +17,11 @@ abstract class Command extends BaseCommand
      * Exit success code
      */
     const EXIT_SUCCESS = 0;
+
+    /**
+     * Exit failure code
+     */
+    const EXIT_FAILURE = 1;
 
     /**
      * Http request object
