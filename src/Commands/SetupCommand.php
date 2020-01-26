@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use Exception;
+use App\Exceptions\DbException;
 use App\Exceptions\RunTimeException;
 use App\Repositories\SetupRepository;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,8 +50,11 @@ class SetupCommand extends Command
     {
         try {
             $this->repo->setupDb();
+            $this->repo->seedDb('');
+        } catch (DbException $e) {
+            throw new RunTimeException($e->getMessage());
         } catch (Exception $e) {
-            throw new RunTimeException('Whoops, something went wrong!');
+            throw new RunTimeException('Whoops, something went wrong!. Please, run `setup` command first.');
         }
 
         return self::EXIT_SUCCESS;
