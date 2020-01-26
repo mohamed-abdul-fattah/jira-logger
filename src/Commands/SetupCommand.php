@@ -6,6 +6,7 @@ use Exception;
 use App\Exceptions\DbException;
 use App\Exceptions\RunTimeException;
 use App\Repositories\SetupRepository;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,7 +39,12 @@ class SetupCommand extends Command
     protected function configure()
     {
         $this->setName('setup')
-             ->setDescription('Setup Jira CLI environment');
+             ->setDescription('Setup Jira CLI environment')
+             ->addArgument(
+                 'platform uri',
+                 InputArgument::REQUIRED,
+                 'Jira server URI'
+             );
     }
 
     /**
@@ -50,7 +56,7 @@ class SetupCommand extends Command
     {
         try {
             $this->repo->setupDb();
-            $this->repo->seedDb('');
+            $this->repo->seedDb($input->getArgument('platform uri'));
         } catch (DbException $e) {
             throw new RunTimeException($e->getMessage());
         } catch (Exception $e) {
