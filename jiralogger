@@ -8,6 +8,7 @@
  * @since  1.0.0
  */
 
+use App\Commands\SetupCommand;
 use App\Commands\ConnectCommand;
 use App\Services\Connect\JiraConnect;
 use Symfony\Component\Console\Application;
@@ -22,6 +23,7 @@ define('APP_VERSION', '1.0.0');
 
 $app = new Application( 'Jira Logger', APP_VERSION );
 
+$app->add(new SetupCommand);
 $app->add(new ConnectCommand(new JiraConnect));
 
 $app->run();
