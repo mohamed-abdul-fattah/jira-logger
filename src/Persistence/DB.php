@@ -136,6 +136,28 @@ class DB
     }
 
     /**
+     * Update a database record
+     *
+     * @param  string $table
+     * @param  array $args
+     * @param  array $conditions
+     * @return bool
+     */
+    public function update(string $table, array $args, array $conditions = [])
+    {
+        $sth  = "UPDATE {$table} SET";
+        $data = [];
+        foreach ($args as $col => $value) {
+            $data[] = "`{$col}`=:{$col}";
+        }
+        $data = implode(',', $data);
+        $sth .= " {$data} WHERE 1=1";
+        list($sth, $conditions) = $this->where($sth, $conditions, false);
+
+        return $this->query($sth, $args);
+    }
+
+    /**
      * Get columns count based on a given conditions
      *
      * @param  string $table
@@ -145,18 +167,37 @@ class DB
     public function count(string $table, $conditions = [])
     {
         $sth = "SELECT COUNT(*) as count FROM {$table} WHERE 1=1";
-        if (! empty($conditions)) {
-            foreach ($conditions as $col => $value) {
-                if (is_null($value)) {
-                    $sth .= " AND {$col} IS NULL";
-                    unset($conditions[$col]);
-                    continue;
-                }
-                $sth .= " AND {$col}=:{$col}";
-            }
-        }
+        list($sth, $conditions) = $this->where($sth, $conditions);
 
         $col = $this->fetch($sth, $conditions);
         return (int) $col->count;
+    }
+
+    /**
+     * Apply WHERE clause conditions to given statement
+     *
+     * @param  string $sth
+     * @param  array $conditions
+     * @param  bool $bind
+     * @return array
+     */
+    private function where(string $sth, $conditions, $bind = true): array
+    {
+        if (! empty($conditions)) {
+            foreach ($conditions as $col => $value) {
+                if (is_null($value)) {
+                    $sth .= " AND `{$col}` IS NULL";
+                    unset($conditions[$col]);
+                    continue;
+                }
+                if ($bind) {
+                    $sth .= " AND `{$col}`=:{$col}";
+                } else {
+                    $value = $this->db->quote($value);
+                    $sth  .= " AND `{$col}`={$value}";
+                }
+            }
+        }
+        return [$sth, $conditions];
     }
 }

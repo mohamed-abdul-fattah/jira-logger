@@ -60,6 +60,7 @@ class SetupCommand extends Command
         $validator   = new SetupValidator($platformUri);
         $validator->validate();
 
+        $output->writeln('<comment>Setup in progress...</comment>');
         try {
             $this->repo->setupDb();
             $this->repo->seedDb($platformUri);
@@ -68,6 +69,7 @@ class SetupCommand extends Command
         } catch (Exception $e) {
             throw new RunTimeException('Whoops, something went wrong!');
         }
+        $output->writeln('<info>Setup is complete</info>');
 
         return self::EXIT_SUCCESS;
     }

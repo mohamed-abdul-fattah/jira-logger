@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\RunTimeException;
+use App\Exceptions\DbException;
 
 /**
  * Class TaskRepository
@@ -27,13 +27,17 @@ class TaskRepository extends Repository
         // Check whether is there a running log or not
         $logs = $this->db->count('logs', ['ended_at' => null]);
         if ($logs > 0) {
-            throw new RunTimeException('There is a running log already! Run `log:abort` or `log:stop`, then try again');
+            throw new DbException('There is a running log already! Run `log:abort` or `log:stop`, then try again');
         }
+
+        $this->db->beginTransaction();
 
         $this->db->insert('logs', [
             'task_id'     => $taskId,
             'started_at'  => date("Y-m-d {$time}"),
             'description' => $desc,
         ]);
+
+        $this->db->commit();
     }
 }

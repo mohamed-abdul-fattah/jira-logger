@@ -79,16 +79,14 @@ class SetupRepository extends Repository
      */
     private function setupPlatform(string $uri)
     {
-        // TODO: refactor to count method
-        $sth   = "SELECT COUNT(*) as count FROM settings
-                  WHERE `key`='platform_uri'";
-        $check  = $this->db->fetch($sth);
+        $uris = $this->db->count('settings', ['key' => 'platform_uri']);
 
-        if ($check->count > 0) {
-            // TODO: refactor to update method
-            $sth     = "UPDATE settings SET `value`=:uri
-                        WHERE `key`='platform_uri'";
-            $updated = $this->db->query($sth, ['uri' => $uri]);
+        if ($uris > 0) {
+            $updated = $this->db->update('settings', [
+                'value' => $uri
+            ], [
+                'key'   => 'platform_uri'
+            ]);
 
             if ($updated === false) {
                 throw new DbException('Cannot update platform URI!');
@@ -97,10 +95,10 @@ class SetupRepository extends Repository
             return;
         }
 
-        // TODO: refactor to insert method
-        $sth      = "INSERT INTO settings (`key`, `value`)
-                     VALUES ('platform_uri', :uri)";
-        $inserted = $this->db->query($sth, ['uri' => $uri]);
+        $inserted = $this->db->insert('settings', [
+            'key'   => 'platform_uri',
+            'value' => $uri,
+        ]);
 
         if ($inserted === false) {
             throw new DbException('Cannot insert platform URI!');
