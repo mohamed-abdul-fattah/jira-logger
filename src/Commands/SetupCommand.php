@@ -6,6 +6,7 @@ use Exception;
 use App\Exceptions\DbException;
 use App\Exceptions\RunTimeException;
 use App\Repositories\SetupRepository;
+use App\Services\Validators\SetupValidator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,16 +52,21 @@ class SetupCommand extends Command
      * @param  InputInterface $input
      * @param  OutputInterface $output
      * @return int|void
+     * @throws RunTimeException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $platform_uri = $input->getArgument('platform uri');
+        $validator    = new SetupValidator($platform_uri);
+        $validator->validate();
+
         try {
             $this->repo->setupDb();
-            $this->repo->seedDb($input->getArgument('platform uri'));
+            $this->repo->seedDb($platform_uri);
         } catch (DbException $e) {
             throw new RunTimeException($e->getMessage());
         } catch (Exception $e) {
-            throw new RunTimeException('Whoops, something went wrong!. Please, run `setup` command first.');
+            throw new RunTimeException('Whoops, something went wrong!');
         }
 
         return self::EXIT_SUCCESS;

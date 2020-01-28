@@ -74,26 +74,33 @@ class SetupRepository extends Repository
     /**
      * Setup platform URI
      *
-     * @param string $uri
+     * @param  string $uri
      * @throws DbException
      */
     private function setupPlatform(string $uri)
     {
-        $check    = $this->db->fetch("
-                        SELECT COUNT(`id`) as count FROM settings
-                        WHERE `key`='platform_uri' AND `value`=:uri
-                    ", ['uri' => $uri]);
+        $sth   = "SELECT COUNT(*) as count FROM settings
+                  WHERE `key`='platform_uri'";
+        $check  = $this->db->fetch($sth);
+
         if ($check->count > 0) {
-            throw new DbException('Cannot insert platform URI. Already inserted!');
+            $sth     = "UPDATE settings SET `value`=:uri
+                        WHERE `key`='platform_uri'";
+            $updated = $this->db->query($sth, ['uri' => $uri]);
+
+            if ($updated === false) {
+                throw new DbException('Cannot update platform URI!');
+            }
+
+            return;
         }
 
-        $inserted = $this->db->query("
-                        INSERT INTO settings (`key`, `value`)
-                        VALUES ('platform_uri', :uri)
-                    ", ['uri' => $uri]);
+        $sth      = "INSERT INTO settings (`key`, `value`)
+                     VALUES ('platform_uri', :uri)";
+        $inserted = $this->db->query($sth, ['uri' => $uri]);
 
         if ($inserted === false) {
-            throw new DbException('Cannot insert platform URI. Please, run `setup` command first.');
+            throw new DbException('Cannot insert platform URI!');
         }
     }
 }
