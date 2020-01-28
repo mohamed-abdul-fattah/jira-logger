@@ -79,11 +79,13 @@ class SetupRepository extends Repository
      */
     private function setupPlatform(string $uri)
     {
+        // TODO: refactor to count method
         $sth   = "SELECT COUNT(*) as count FROM settings
                   WHERE `key`='platform_uri'";
         $check  = $this->db->fetch($sth);
 
         if ($check->count > 0) {
+            // TODO: refactor to update method
             $sth     = "UPDATE settings SET `value`=:uri
                         WHERE `key`='platform_uri'";
             $updated = $this->db->query($sth, ['uri' => $uri]);
@@ -95,6 +97,7 @@ class SetupRepository extends Repository
             return;
         }
 
+        // TODO: refactor to insert method
         $sth      = "INSERT INTO settings (`key`, `value`)
                      VALUES ('platform_uri', :uri)";
         $inserted = $this->db->query($sth, ['uri' => $uri]);

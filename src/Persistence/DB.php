@@ -3,7 +3,9 @@
 namespace App\Persistence;
 
 use PDO;
+use stdClass;
 use PDOException;
+use PDOStatement;
 use App\Exceptions\DbException;
 
 /**
@@ -79,7 +81,7 @@ class DB
      * Run SQL raw query
      *
      * @param  string $query
-     * @return false|\PDOStatement
+     * @return false|PDOStatement
      */
     public function raw(string $query)
     {
@@ -105,7 +107,7 @@ class DB
      *
      * @param  string $statement
      * @param  array $args
-     * @return \stdClass
+     * @return stdClass
      */
     public function fetch(string $statement, array $args = [])
     {
@@ -113,5 +115,48 @@ class DB
         $sth->execute($args);
 
         return $sth->fetch(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Insert a new record into a database table
+     *
+     * @param  string $table
+     * @param  array $args
+     * @return bool
+     */
+    public function insert(string $table, array $args)
+    {
+        $keys = array_keys($args);
+        $cols = implode(',', $keys);
+        $vals = implode(',:', $keys);
+        $sth  = "INSERT INTO {$table} ({$cols})
+                 VALUES (:{$vals})";
+
+        return $this->query($sth, $args);
+    }
+
+    /**
+     * Get columns count based on a given conditions
+     *
+     * @param  string $table
+     * @param  array $conditions
+     * @return int
+     */
+    public function count(string $table, $conditions = [])
+    {
+        $sth = "SELECT COUNT(*) as count FROM {$table} WHERE 1=1";
+        if (! empty($conditions)) {
+            foreach ($conditions as $col => $value) {
+                if (is_null($value)) {
+                    $sth .= " AND {$col} IS NULL";
+                    unset($conditions[$col]);
+                    continue;
+                }
+                $sth .= " AND {$col}=:{$col}";
+            }
+        }
+
+        $col = $this->fetch($sth, $conditions);
+        return (int) $col->count;
     }
 }
