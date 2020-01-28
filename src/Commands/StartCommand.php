@@ -2,9 +2,10 @@
 
 namespace App\Commands;
 
+use App\Services\Validators\StartValidator;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -39,8 +40,19 @@ class StartCommand extends Command
             );
     }
 
+    /**
+     * @param  InputInterface $input
+     * @param  OutputInterface $output
+     * @return int|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //
+        $taskId    = $input->getArgument('task id');
+        $time      = $input->getOption('time');
+        $desc      = $input->getOption('description');
+        $validator = new StartValidator($taskId, $time, $desc);
+        $validator->validate();
+
+        return self::EXIT_SUCCESS;
     }
 }
