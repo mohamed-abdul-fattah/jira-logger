@@ -15,16 +15,16 @@ class SetupValidator
     /**
      * @var string
      */
-    private $platform_uri;
+    private $platformUri;
 
     /**
      * SetupValidator constructor.
      *
-     * @param string $platform_uri
+     * @param string $platformUri
      */
-    public function __construct($platform_uri)
+    public function __construct($platformUri)
     {
-        $this->platform_uri = $platform_uri;
+        $this->platformUri = $platformUri;
     }
 
     /**
@@ -34,12 +34,12 @@ class SetupValidator
      */
     public function validate()
     {
-        if (empty($this->platform_uri)) {
+        if (empty($this->platformUri)) {
             throw new RunTimeException('Platform URI cannot be empty.');
-        } elseif (! is_string($this->platform_uri)) {
+        } elseif (! is_string($this->platformUri)) {
             throw new RunTimeException('Platform URI must be a string.');
-        } elseif (! preg_match('/^https?:\/\/.+\..+\/$/', $this->platform_uri)) {
-            throw new RunTimeException('Platform URI must be in http(s)://example.domain/ format');
+        } elseif (! preg_match('/^https?:\/\/.+\..+\/$/', $this->platformUri)) {
+            throw new RunTimeException('Platform URI must be in http(s)://example.domain/ format.');
         }
     }
 }

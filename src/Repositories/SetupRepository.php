@@ -50,8 +50,8 @@ class SetupRepository extends Repository
                 id INTEGER PRIMARY KEY,
                 task_id VARCHAR(20) NOT NULL,
                 description VARCHAR(255) NULL,
-                start_time TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
-                end_time TIMESTAMP NULL,
+                started_at TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
+                ended_at TIMESTAMP NULL,
                 log VARCHAR(10) NULL
             );
         ");

@@ -56,13 +56,13 @@ class SetupCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $platform_uri = $input->getArgument('platform uri');
-        $validator    = new SetupValidator($platform_uri);
+        $platformUri = $input->getArgument('platform uri');
+        $validator   = new SetupValidator($platformUri);
         $validator->validate();
 
         try {
             $this->repo->setupDb();
-            $this->repo->seedDb($platform_uri);
+            $this->repo->seedDb($platformUri);
         } catch (DbException $e) {
             throw new RunTimeException($e->getMessage());
         } catch (Exception $e) {
