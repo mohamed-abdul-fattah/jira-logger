@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Persistence\DB;
+
 /**
  * Class Repository
  *
@@ -10,5 +12,16 @@ namespace App\Repositories;
  */
 abstract class Repository
 {
-    //
+    /**
+     * @var DB
+     */
+    protected $db;
+
+    /**
+     * Repository constructor.
+     */
+    public function __construct()
+    {
+        $this->db = DB::init();
+    }
 }

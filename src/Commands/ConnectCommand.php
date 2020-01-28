@@ -88,6 +88,7 @@ class ConnectCommand extends Command
         $res = $this->connectService
                     ->setDispatcher($this->request)
                     ->connect($username, $password);
+        // TODO: add session ID to DB
         return self::EXIT_SUCCESS;
     }
 }
