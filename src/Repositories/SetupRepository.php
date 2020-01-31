@@ -50,8 +50,8 @@ class SetupRepository extends Repository
                 id INTEGER PRIMARY KEY,
                 task_id VARCHAR(20) NOT NULL,
                 description VARCHAR(255) NULL,
-                start_time TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
-                end_time TIMESTAMP NULL,
+                started_at TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
+                ended_at TIMESTAMP NULL,
                 log VARCHAR(10) NULL
             );
         ");
@@ -79,14 +79,14 @@ class SetupRepository extends Repository
      */
     private function setupPlatform(string $uri)
     {
-        $sth   = "SELECT COUNT(*) as count FROM settings
-                  WHERE `key`='platform_uri'";
-        $check  = $this->db->fetch($sth);
+        $uris = $this->db->count('settings', ['key' => 'platform_uri']);
 
-        if ($check->count > 0) {
-            $sth     = "UPDATE settings SET `value`=:uri
-                        WHERE `key`='platform_uri'";
-            $updated = $this->db->query($sth, ['uri' => $uri]);
+        if ($uris > 0) {
+            $updated = $this->db->update('settings', [
+                'value' => $uri
+            ], [
+                'key'   => 'platform_uri'
+            ]);
 
             if ($updated === false) {
                 throw new DbException('Cannot update platform URI!');
@@ -95,9 +95,10 @@ class SetupRepository extends Repository
             return;
         }
 
-        $sth      = "INSERT INTO settings (`key`, `value`)
-                     VALUES ('platform_uri', :uri)";
-        $inserted = $this->db->query($sth, ['uri' => $uri]);
+        $inserted = $this->db->insert('settings', [
+            'key'   => 'platform_uri',
+            'value' => $uri,
+        ]);
 
         if ($inserted === false) {
             throw new DbException('Cannot insert platform URI!');
