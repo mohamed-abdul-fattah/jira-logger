@@ -2,9 +2,9 @@
 
 namespace App\Commands;
 
-use App\Repositories\TaskRepository;
-use Symfony\Component\Console\Input\InputInterface;
+use App\Services\LogTimer;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -16,15 +16,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 class StopCommand extends Command
 {
     /**
-     * @var TaskRepository
+     * @var LogTimer
      */
-    private $repo;
+    private $timer;
 
+    /**
+     * StopCommand constructor.
+     */
     public function __construct()
     {
         parent::__construct();
 
-        $this->repo = new TaskRepository;
+        $this->timer = new LogTimer;
     }
 
     /**
@@ -34,6 +37,12 @@ class StopCommand extends Command
     {
         $this->setName('log:stop')
              ->setDescription('Stop task logging timer')
+             ->addOption(
+                 'time',
+                 't',
+                 InputOption::VALUE_REQUIRED,
+                 'Task stop log time'
+             )
              ->addOption(
                  'description',
                  'd',
@@ -50,9 +59,10 @@ class StopCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $desc = $input->getOption('description');
+        $time = $input->getOption('time');
 
         $output->writeln('<comment>Stop logging...</comment>');
-        $this->repo->stop($desc);
+        $this->timer->stop($time, $desc);
         $output->writeln('<info>Log stopped successfully</info>');
 
         return self::EXIT_SUCCESS;

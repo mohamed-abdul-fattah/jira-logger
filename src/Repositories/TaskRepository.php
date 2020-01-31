@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use stdClass;
 use App\Entities\Task;
 use App\Exceptions\DbException;
 
@@ -44,22 +43,16 @@ class TaskRepository extends Repository
     }
 
     /**
+     * @param string $end
+     * @param string $log
      * @param null $desc
      */
-    public function stop($desc = null)
+    public function stopLog($end, $log, $desc = null)
     {
-        // Check whether is there a running log or not
-        /** @var Task $task */
-        $task = $this->getTask(['ended_at' => null]);
-        if (empty($task)) {
-            throw new DbException('There is no running log! Run `log:start` to start logging timer');
-        }
-
         $this->db->beginTransaction();
 
-        $end  = date('Y-m-d H:i');
         $args = (! empty($desc)) ? ['description' => $desc] : [];
-        $args = array_merge($args, ['ended_at' => $end, 'log' => $task->addLog($end)]);
+        $args = array_merge($args, ['ended_at' => $end, 'log' => $log]);
 
         $this->db->update('logs', $args, ['ended_at' => null]);
 
@@ -67,10 +60,18 @@ class TaskRepository extends Repository
     }
 
     /**
+     * @return Task
+     */
+    public function getRunningTask()
+    {
+        return $this->getTask(['ended_at' => null]);
+    }
+
+    /**
      * Get one task from DB based on the given conditions
      *
      * @param  array $args
-     * @return stdClass
+     * @return Task
      */
     public function getTask(array $args)
     {
