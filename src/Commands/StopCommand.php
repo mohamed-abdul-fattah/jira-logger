@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Services\LogTimer;
+use App\Services\Validators\StopValidator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,8 +59,10 @@ class StopCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $desc = $input->getOption('description');
-        $time = $input->getOption('time');
+        $desc      = $input->getOption('description');
+        $time      = $input->getOption('time');
+        $validator = new StopValidator($time);
+        $validator->validate();
 
         $output->writeln('<comment>Stop logging...</comment>');
         $this->timer->stop($time, $desc);
