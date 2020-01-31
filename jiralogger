@@ -8,6 +8,7 @@
  * @since  1.0.0
  */
 
+use App\Commands\StopCommand;
 use App\Commands\SetupCommand;
 use App\Commands\StartCommand;
 use App\Commands\ConnectCommand;
@@ -27,5 +28,6 @@ $app = new Application( 'Jira Logger', APP_VERSION );
 $app->add(new SetupCommand);
 $app->add(new ConnectCommand(new JiraConnect));
 $app->add(new StartCommand);
+$app->add(new StopCommand);
 
 $app->run();

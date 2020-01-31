@@ -35,7 +35,7 @@ class StartCommand extends Command
     protected function configure()
     {
         $this->setName('log:start')
-             ->setDescription('Start task logging countdown')
+             ->setDescription('Start task logging timer')
              ->addArgument(
                  'task id',
                  InputArgument::REQUIRED,
