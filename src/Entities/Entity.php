@@ -26,13 +26,14 @@ abstract class Entity
     }
 
     /**
-     * @param  int $id
-     * @return int
+     * @param string $name
+     * @param mixed $value
      */
-    public function setId(int $id): int
+    public function __set($name, $value)
     {
-        $this->id = $id;
-
-        return $this->id;
+        $prop = camelCase($name);
+        if (property_exists(static::class, $prop)) {
+            $this->{$prop} = $value;
+        }
     }
 }

@@ -50,7 +50,10 @@ class StopCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $desc = $input->getOption('description');
-        //
+
+        $output->writeln('<comment>Stop logging...</comment>');
+        $this->repo->stop($desc);
+        $output->writeln('<info>Log stopped successfully</info>');
 
         return self::EXIT_SUCCESS;
     }
