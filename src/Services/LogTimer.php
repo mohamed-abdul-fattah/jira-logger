@@ -28,6 +28,27 @@ class LogTimer
     }
 
     /**
+     * Start logging task timer
+     *
+     * @param string$taskId
+     * @param string|null $time
+     * @param string|null $desc
+     */
+    public function start($taskId, $time = null, $desc = null)
+    {
+        // Check whether is there a running log or not
+        $task = $this->taskRepo->getRunningTask();
+        if (! empty($task)) {
+            throw new RunTimeException('There is a running log already! Run `log:abort` or `log:stop`, then try again');
+        }
+
+        $time = (empty($time)) ? date('H:i') : $time;
+        $desc = (empty($desc)) ? "Working on {$taskId} issue" : $desc;
+
+        $this->taskRepo->startLog($taskId, $time, $desc);
+    }
+
+    /**
      * Stop logging task time
      *
      * @param string|null $end
