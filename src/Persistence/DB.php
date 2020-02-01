@@ -107,14 +107,31 @@ class DB
      *
      * @param  string $statement
      * @param  array $args
-     * @return stdClass
+     * @param  string $class
+     * @return stdClass|mixed
      */
-    public function fetch(string $statement, array $args = [])
+    public function fetch(string $statement, array $args = [], $class = stdClass::class)
     {
         $sth = $this->db->prepare($statement);
         $sth->execute($args);
 
-        return $sth->fetch(PDO::FETCH_OBJ);
+        return $sth->fetchObject($class);
+    }
+
+    /**
+     * Get one record from DB
+     *
+     * @param  string $table
+     * @param  array $args
+     * @param  string $class
+     * @return stdClass|mixed
+     */
+    public function getOne(string $table, array $args = [], $class = stdClass::class)
+    {
+        list($sth, $args) = $this->where("SELECT * FROM {$table} WHERE 1=1", $args);
+        $sth .= ' LIMIT 1';
+
+        return $this->fetch($sth, $args, $class);
     }
 
     /**
@@ -152,7 +169,8 @@ class DB
         }
         $data = implode(',', $data);
         $sth .= " {$data} WHERE 1=1";
-        list($sth, $conditions) = $this->where($sth, $conditions, false);
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        list($sth, $_) = $this->where($sth, $conditions, false);
 
         return $this->query($sth, $args);
     }

@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Repositories\TaskRepository;
+use App\Services\LogTimer;
 use App\Services\Validators\StartValidator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,15 +18,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 class StartCommand extends Command
 {
     /**
-     * @var TaskRepository
+     * @var LogTimer
      */
-    private $repo;
+    private $timer;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->repo = new TaskRepository;
+        $this->timer = new LogTimer;
     }
 
     /**
@@ -35,7 +35,7 @@ class StartCommand extends Command
     protected function configure()
     {
         $this->setName('log:start')
-             ->setDescription('Start task logging countdown')
+             ->setDescription('Start task logging timer')
              ->addArgument(
                  'task id',
                  InputArgument::REQUIRED,
@@ -67,7 +67,7 @@ class StartCommand extends Command
         $validator->validate();
 
         $output->writeln('<comment>Start logging...</comment>');
-        $this->repo->start($taskId, $time, $desc);
+        $this->timer->start($taskId, $time, $desc);
         $output->writeln('<info>Log started successfully</info>');
 
         return self::EXIT_SUCCESS;
