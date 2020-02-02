@@ -31,9 +31,9 @@ abstract class Entity
      */
     public function __set($name, $value)
     {
-        $prop = camelCase($name);
-        if (property_exists(static::class, $prop)) {
-            $this->{$prop} = $value;
+        $prop = pascalCase($name);
+        if (method_exists(static::class, "set{$prop}")) {
+            call_user_func_array([$this, "set{$prop}"], [$value]);
         }
     }
 }

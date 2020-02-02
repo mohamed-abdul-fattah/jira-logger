@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use DateTime;
 use App\Exceptions\EntityException;
 
 /**
@@ -36,6 +37,16 @@ class Task extends Entity
      * @var string
      */
     protected $log;
+
+    /**
+     * Set task started at log time
+     *
+     * @param string|DateTime $date
+     */
+    public function setStartedAt($date)
+    {
+        $this->startedAt = $date;
+    }
 
     /**
      * Log time taken working on an issue
