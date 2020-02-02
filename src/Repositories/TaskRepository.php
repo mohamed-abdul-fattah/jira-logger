@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use PDOException;
 use App\Entities\Task;
 use App\Exceptions\DbException;
 
@@ -24,11 +25,15 @@ class TaskRepository extends Repository
     {
         $this->db->beginTransaction();
 
-        $this->db->insert('logs', [
-            'task_id'     => $taskId,
-            'started_at'  => date("Y-m-d {$time}"),
-            'description' => $desc,
-        ]);
+        try {
+            $this->db->insert('logs', [
+                'task_id'     => $taskId,
+                'started_at'  => date("Y-m-d {$time}"),
+                'description' => $desc,
+            ]);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot save log record. Please, run `setup` command');
+        }
 
         $this->db->commit();
     }
@@ -45,7 +50,11 @@ class TaskRepository extends Repository
         $args = (! empty($desc)) ? ['description' => $desc] : [];
         $args = array_merge($args, ['ended_at' => $end, 'log' => $log]);
 
-        $this->db->update('logs', $args, ['ended_at' => null]);
+        try {
+            $this->db->update('logs', $args, ['ended_at' => null]);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot save log record. Please, run `setup` command');
+        }
 
         $this->db->commit();
     }
@@ -66,6 +75,10 @@ class TaskRepository extends Repository
      */
     public function getTask(array $args)
     {
-        return $this->db->getOne('logs', $args, Task::class);
+        try {
+            return $this->db->getOne('logs', $args, Task::class);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot query the database. Please, run `setup` command');
+        }
     }
 }
