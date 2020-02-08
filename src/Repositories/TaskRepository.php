@@ -5,6 +5,7 @@ namespace App\Repositories;
 use PDOException;
 use App\Entities\Task;
 use App\Exceptions\DbException;
+use App\Repositories\Contracts\ITaskRepository;
 
 /**
  * Class TaskRepository
@@ -12,23 +13,24 @@ use App\Exceptions\DbException;
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
  * @since  1.0.0
  */
-class TaskRepository extends Repository
+class TaskRepository extends Repository implements ITaskRepository
 {
     /**
      * Start logging time
      *
-     * @param string $taskId
-     * @param string $time
-     * @param string $desc
+     * @param  string $taskId
+     * @param  string $time
+     * @param  string $desc
+     * @return void
      */
-    public function startLog($taskId, $time, $desc)
+    public function startLog($taskId, $time, $desc): void
     {
         $this->db->beginTransaction();
 
         try {
             $this->db->insert('logs', [
                 'task_id'     => $taskId,
-                'started_at'  => date("Y-m-d {$time}"),
+                'started_at'  => $time,
                 'description' => $desc,
             ]);
         } catch (PDOException $e) {
@@ -39,11 +41,12 @@ class TaskRepository extends Repository
     }
 
     /**
-     * @param string $end
-     * @param string $log
-     * @param null $desc
+     * @param  string $end
+     * @param  string $log
+     * @param  string|null $desc
+     * @return void
      */
-    public function stopLog($end, $log, $desc = null)
+    public function stopLog($end, $log, $desc = null): void
     {
         $this->db->beginTransaction();
 
@@ -60,7 +63,9 @@ class TaskRepository extends Repository
     }
 
     /**
-     * @return Task
+     * Get the current running task
+     *
+     * @return Task|null
      */
     public function getRunningTask()
     {
