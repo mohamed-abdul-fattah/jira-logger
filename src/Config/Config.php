@@ -21,7 +21,7 @@ class Config
     public static function getDb()
     {
         if (isTestingEnv()) {
-            return new TestDb;
+            return TestDb::init();
         }
 
         $dbFile = __DIR__ . '/../Persistence/database.db';

@@ -1,4 +1,5 @@
 /.idea/
 /vendor/
 /**/database.db
+/**/test.db
 /.phpunit.result.cache

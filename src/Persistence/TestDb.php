@@ -15,23 +15,27 @@ class TestDb
     /**
      * @var string
      */
-    protected $dbFile = __DIR__ . '/../Persistence/test.db';
+    protected static $dbFile = __DIR__ . '/../Persistence/test.db';
 
     /**
      * TestDb constructor.
-     *
-     * TODO: change to use in-memory array instead of SQLite DB
      */
-    public function __construct()
+    private function __construct()
     {
-        $db = new PDO("sqlite:{$this->dbFile}");
+        //
+    }
+
+    /**
+     * TODO: change to use in-memory array instead of SQLite DB
+     *
+     * @return PDO
+     */
+    public static function init()
+    {
+        $file = self::$dbFile;
+        $db   = new PDO("sqlite:{$file}");
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $db;
-    }
-
-    public function __destruct()
-    {
-        @unlink($this->dbFile);
     }
 }
