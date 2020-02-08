@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Validators;
+namespace Tests\Unit\Validators;
 
 use Tests\TestCase;
 use App\Exceptions\RunTimeException;

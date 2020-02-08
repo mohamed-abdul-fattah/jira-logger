@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services;
+namespace Tests\Unit\Services;
 
 use Tests\TestCase;
 use App\Entities\Task;
