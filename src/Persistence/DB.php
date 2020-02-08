@@ -6,6 +6,7 @@ use PDO;
 use stdClass;
 use PDOException;
 use PDOStatement;
+use App\Config\Config;
 use App\Exceptions\DbException;
 
 /**
@@ -33,10 +34,8 @@ class DB
      */
     private function __construct()
     {
-        $dbFile = __DIR__ . '/database.db';
         try {
-            $this->db = new PDO("sqlite:{$dbFile}");
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->db = Config::getDb();
         } catch (PDOException $e) {
             throw new DbException('Cannot setup database connection!');
         }
