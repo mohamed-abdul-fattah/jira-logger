@@ -48,5 +48,5 @@ function env(string $key, $default = null)
  */
 function isTestingEnv(): bool
 {
-    return env('ENV') === 'testing' ? true : false;
+    return env('ENV') === 'testing';
 }

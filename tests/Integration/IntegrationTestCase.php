@@ -2,8 +2,8 @@
 
 namespace Tests\Integration;
 
+use Tests\TestCase;
 use App\Persistence\DB;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 
 /**

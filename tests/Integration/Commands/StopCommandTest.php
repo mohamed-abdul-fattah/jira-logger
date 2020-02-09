@@ -7,8 +7,17 @@ use App\Exceptions\RunTimeException;
 use Tests\Integration\IntegrationTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Class StopCommandTest
+ *
+ * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
+ * @since  1.0.0
+ */
 class StopCommandTest extends IntegrationTestCase
 {
+    /**
+     * @var CommandTester
+     */
     private $command;
 
     protected function setUp(): void
