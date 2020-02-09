@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Services\LogTimer;
+use App\Repositories\TaskRepository;
 use App\Services\Validators\StopValidator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,7 @@ class StopCommand extends Command
     {
         parent::__construct();
 
-        $this->timer = new LogTimer;
+        $this->timer = new LogTimer(new TaskRepository);
     }
 
     /**

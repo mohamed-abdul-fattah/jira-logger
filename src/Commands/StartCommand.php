@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Services\LogTimer;
+use App\Repositories\TaskRepository;
 use App\Services\Validators\StartValidator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,7 +27,7 @@ class StartCommand extends Command
     {
         parent::__construct();
 
-        $this->timer = new LogTimer;
+        $this->timer = new LogTimer(new TaskRepository);
     }
 
     /**

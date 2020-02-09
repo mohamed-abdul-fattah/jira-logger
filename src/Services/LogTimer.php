@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Entities\Task;
 use App\Exceptions\RunTimeException;
-use App\Repositories\TaskRepository;
+use App\Repositories\Contracts\ITaskRepository;
 
 /**
  * Class LogTimer
@@ -15,16 +15,18 @@ use App\Repositories\TaskRepository;
 class LogTimer
 {
     /**
-     * @var TaskRepository
+     * @var ITaskRepository
      */
     protected $taskRepo;
 
     /**
      * LogTimer constructor.
+     *
+     * @param ITaskRepository $repository
      */
-    public function __construct()
+    public function __construct(ITaskRepository $repository)
     {
-        $this->taskRepo = new TaskRepository;
+        $this->taskRepo = $repository;
     }
 
     /**
@@ -42,7 +44,7 @@ class LogTimer
             throw new RunTimeException('There is a running log already! Run `log:abort` or `log:stop`, then try again');
         }
 
-        $time = (empty($time)) ? date('H:i') : $time;
+        $time = (empty($time)) ? date('Y-m-d H:i') : date("Y-m-d {$time}");
         $desc = (empty($desc)) ? "Working on {$taskId} issue" : $desc;
 
         $this->taskRepo->startLog($taskId, $time, $desc);
