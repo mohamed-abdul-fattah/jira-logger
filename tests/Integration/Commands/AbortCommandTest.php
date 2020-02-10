@@ -87,19 +87,4 @@ class AbortCommandTest extends IntegrationTestCase
             'task_id' => 'TASK-123'
         ]);
     }
-
-    /**
-     * Starts a task for stopping test
-     */
-    private function startLog()
-    {
-        $time = date('Y-m-d H:i', strtotime('-1 hour'));
-
-        $this->db->insert('logs', [
-            'task_id'     => 'TASK-123',
-            'started_at'  => $time,
-            'description' => 'Working on TASK-123 issue',
-        ]);
-    }
-
 }

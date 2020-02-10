@@ -12,6 +12,7 @@ use App\Commands\StopCommand;
 use App\Commands\SetupCommand;
 use App\Commands\AbortCommand;
 use App\Commands\StartCommand;
+use App\Commands\StatusCommand;
 use App\Commands\ConnectCommand;
 use App\Services\Connect\JiraConnect;
 use Symfony\Component\Console\Application;
@@ -45,5 +46,6 @@ $app->add(new ConnectCommand(new JiraConnect));
 $app->add(new StartCommand);
 $app->add(new StopCommand);
 $app->add(new AbortCommand);
+$app->add(new StatusCommand);
 
 $app->run();

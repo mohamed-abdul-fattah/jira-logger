@@ -39,6 +39,26 @@ class Task extends Entity
     protected $log;
 
     /**
+     * Get task log ID
+     *
+     * @return string
+     */
+    public function getTaskId()
+    {
+        return $this->taskId;
+    }
+
+    /**
+     * Set task log ID
+     *
+     * @param string $taskId
+     */
+    public function setTaskId(string $taskId)
+    {
+        $this->taskId = $taskId;
+    }
+
+    /**
      * Set task started at log time
      *
      * @param string|DateTime $date
@@ -46,6 +66,22 @@ class Task extends Entity
     public function setStartedAt($date)
     {
         $this->startedAt = $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStartedAt()
+    {
+        return $this->startedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**

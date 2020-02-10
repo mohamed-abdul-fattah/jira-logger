@@ -2,9 +2,13 @@
 
 namespace App\Commands;
 
+use App\Entities\Task;
 use App\Services\LogTimer;
 use App\Repositories\TaskRepository;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -43,7 +47,30 @@ class StatusCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->timer->getStatus();
+        /** @var Task $task */
+        list($unSyncedLogs, $task) = $this->timer->getStatus();
+        $table = new Table($output);
+
+        if (empty($task)) {
+            $taskInfo = [[
+                'Current running task',
+                '<info>No items</info>'
+            ]];
+        } else {
+            $taskInfo = [
+                [new TableCell("Working on...\n", ['colspan' => 2])],
+                ['Task ID', "<info>{$task->getTaskId()}</info>"],
+                ['Started at', "<info>{$task->getStartedAt()}</info>"],
+                ['Description', "<info>{$task->getDescription()}</info>"],
+            ];
+        }
+
+        $table->setRows(array_merge([
+            ['Un-synced logs', "<info>{$unSyncedLogs} task(s)</info>"],
+            new TableSeparator,
+        ], $taskInfo));
+
+        $table->render();
 
         return self::EXIT_SUCCESS;
     }
