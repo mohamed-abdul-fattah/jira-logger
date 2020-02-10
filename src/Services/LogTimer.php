@@ -84,4 +84,19 @@ class LogTimer
 
         $this->taskRepo->abortLog();
     }
+
+    /**
+     * Get current log status, whether there is a running task or not
+     * 1st return result indicates the un-synced tasks
+     * 2nd return result is the current running task
+     *
+     * @return array
+     */
+    public function getStatus()
+    {
+        return [
+            $this->taskRepo->countUnSyncedLogs(),
+            $this->taskRepo->getRunningTask()
+        ];
+    }
 }

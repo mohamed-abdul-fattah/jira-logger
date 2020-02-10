@@ -105,4 +105,20 @@ class TaskRepository extends Repository implements ITaskRepository
             throw new DbException('Cannot query the database. Please, run `setup` command');
         }
     }
+
+    /**
+     * Get the number of the un-synced logs
+     *
+     * @return int
+     */
+    public function countUnSyncedLogs(): int
+    {
+        try {
+            return $this->db->count('logs', [
+                'synced' => 0
+            ]);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot query the database. Please, run `setup` command');
+        }
+    }
 }

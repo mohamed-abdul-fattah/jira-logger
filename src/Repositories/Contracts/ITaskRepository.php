@@ -40,7 +40,14 @@ interface ITaskRepository
     public function abortLog(): void;
 
     /**
-     * @return Task
+     * @return Task|null
      */
     public function getRunningTask();
+
+    /**
+     * Get the un-synced yet logs count
+     *
+     * @return int
+     */
+    public function countUnSyncedLogs(): int;
 }

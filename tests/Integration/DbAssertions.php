@@ -38,7 +38,8 @@ trait DbAssertions
                 description VARCHAR(255) NULL,
                 started_at TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
                 ended_at TIMESTAMP NULL,
-                log VARCHAR(10) NULL
+                log VARCHAR(10) NULL,
+                synced TINYINT DEFAULT 0
             );
         ");
         $this->db->raw("

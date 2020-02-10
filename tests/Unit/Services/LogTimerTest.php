@@ -119,4 +119,65 @@ class LogTimerTest extends TestCase
         $timer = new LogTimer($repo);
         $timer->abort();
     }
+
+    /**
+     * @test
+     */
+    public function returnZeroWhenNoRunningTask()
+    {
+        $repo = $this->createMock(ITaskRepository::class);
+        $repo->expects($this->once())
+             ->method('getRunningTask')
+             ->willReturn(null);
+        $repo->expects($this->once())
+             ->method('countUnSyncedLogs')
+             ->willReturn(0);
+
+        $timer = new LogTimer($repo);
+        list($logs, $task) = $timer->getStatus();
+
+        $this->assertEquals(0, $logs);
+        $this->assertTrue(is_null($task));
+    }
+
+    /**
+     * @test
+     */
+    public function returnOneWhenThereIsStoppedUnSyncedTask()
+    {
+        $repo = $this->createMock(ITaskRepository::class);
+        $repo->expects($this->once())
+             ->method('getRunningTask')
+             ->willReturn(null);
+        $repo->expects($this->once())
+             ->method('countUnSyncedLogs')
+             ->willReturn(1);
+
+        $timer = new LogTimer($repo);
+        list($logs, $task) = $timer->getStatus();
+
+        $this->assertEquals(1, $logs);
+        $this->assertTrue(is_null($task));
+    }
+
+    /**
+     * @test
+     */
+    public function returnTaskWhenThereIsRunningTask()
+    {
+        $task = $this->createMock(Task::class);
+        $repo = $this->createMock(ITaskRepository::class);
+        $repo->expects($this->once())
+             ->method('getRunningTask')
+             ->willReturn($task);
+        $repo->expects($this->once())
+             ->method('countUnSyncedLogs')
+             ->willReturn(1);
+
+        $timer = new LogTimer($repo);
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        list($_, $task) = $timer->getStatus();
+
+        $this->assertTrue($task instanceof Task);
+    }
 }

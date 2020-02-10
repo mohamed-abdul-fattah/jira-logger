@@ -36,4 +36,23 @@ class IntegrationTestCase extends TestCase
 
         $this->truncateDb();
     }
+
+    /**
+     * Starts a task for stopping test
+     *
+     * @param string $taskId
+     * @param string $desc
+     */
+    protected function startLog(
+        $taskId = 'TASK-123',
+        $desc   = 'Working on TASK-123 issue'
+    ) {
+        $time = date('Y-m-d H:i', strtotime('-1 hour'));
+
+        $this->db->insert('logs', [
+            'task_id'     => $taskId,
+            'started_at'  => $time,
+            'description' => $desc,
+        ]);
+    }
 }
