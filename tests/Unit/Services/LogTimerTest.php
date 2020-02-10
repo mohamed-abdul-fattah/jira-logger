@@ -19,6 +19,8 @@ class LogTimerTest extends TestCase
         $repo->expects($this->once())
              ->method('getRunningTask')
              ->willReturn(new Task);
+        $repo->expects($this->never())
+             ->method('startLog');
 
         $this->expectException(RunTimeException::class);
         $this->expectExceptionMessage('There is a running log already! Run `log:abort` or `log:stop`, then try again');
@@ -34,8 +36,10 @@ class LogTimerTest extends TestCase
     {
         $repo = $this->createMock(ITaskRepository::class);
         $repo->expects($this->once())
-            ->method('getRunningTask')
-            ->willReturn(null);
+             ->method('getRunningTask')
+             ->willReturn(null);
+        $repo->expects($this->once())
+             ->method('startLog');
 
         $timer = new LogTimer($repo);
         $timer->start('TASK-1234');
@@ -48,8 +52,10 @@ class LogTimerTest extends TestCase
     {
         $repo = $this->createMock(ITaskRepository::class);
         $repo->expects($this->once())
-            ->method('getRunningTask')
-            ->willReturn(null);
+             ->method('getRunningTask')
+             ->willReturn(null);
+        $repo->expects($this->never())
+             ->method('stopLog');
 
         $this->expectException(RunTimeException::class);
         $this->expectExceptionMessage('There is no running log! Run `log:start` to start logging timer');
@@ -65,15 +71,52 @@ class LogTimerTest extends TestCase
     {
         $task = $this->createMock(Task::class);
         $task->expects($this->once())
-             ->method('addLog')
-             ->willReturn('endLog');
+             ->method('addLog');
 
         $repo = $this->createMock(ITaskRepository::class);
         $repo->expects($this->once())
-            ->method('getRunningTask')
-            ->willReturn($task);
+             ->method('getRunningTask')
+             ->willReturn($task);
+        $repo->expects($this->once())
+             ->method('stopLog');
 
         $timer = new LogTimer($repo);
         $timer->stop();
+    }
+
+    /**
+     * @test
+     */
+    public function cannotAbortWithNoRunningTask()
+    {
+        $this->expectException(RunTimeException::class);
+        $this->expectExceptionMessage('No running task log to abort!');
+
+        $repo = $this->createMock(ITaskRepository::class);
+        $repo->expects($this->once())
+             ->method('getRunningTask')
+             ->willReturn(null);
+        $repo->expects($this->never())
+             ->method('abortLog');
+
+        $timer = new LogTimer($repo);
+        $timer->abort();
+    }
+
+    /**
+     * @test
+     */
+    public function canAbortARunningTask()
+    {
+        $task = $this->createMock(Task::class);
+        $repo = $this->createMock(ITaskRepository::class);
+        $repo->expects($this->once())
+             ->method('getRunningTask')
+             ->willReturn($task);
+        $repo->expects($this->once())
+             ->method('abortLog');
+
+        $timer = new LogTimer($repo);
+        $timer->abort();
     }
 }

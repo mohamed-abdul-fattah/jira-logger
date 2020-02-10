@@ -175,6 +175,20 @@ class DB
     }
 
     /**
+     * Delete a database record
+     *
+     * @param string $table
+     * @param array $conditions
+     */
+    public function delete(string $table, array $conditions = [])
+    {
+        $sth = "DELETE FROM {$table} WHERE 1=1";
+        list($sth, $conditions) = $this->where($sth, $conditions);
+
+        $this->query($sth, $conditions);
+    }
+
+    /**
      * Get columns count based on a given conditions
      *
      * @param  string $table

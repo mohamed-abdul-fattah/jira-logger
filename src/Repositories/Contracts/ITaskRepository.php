@@ -33,6 +33,13 @@ interface ITaskRepository
     public function stopLog($end, $log, $desc = null): void;
 
     /**
+     * Delete the current running task log
+     *
+     * @return void
+     */
+    public function abortLog(): void;
+
+    /**
      * @return Task
      */
     public function getRunningTask();
