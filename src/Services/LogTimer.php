@@ -70,4 +70,18 @@ class LogTimer
 
         $this->taskRepo->stopLog($end, $log, $desc);
     }
+
+    /**
+     * Abort current running log
+     */
+    public function abort()
+    {
+        // Check whether is there a running log or not
+        $task = $this->taskRepo->getRunningTask();
+        if (empty($task)) {
+            throw new RunTimeException('No running task log to abort!');
+        }
+
+        $this->taskRepo->abortLog();
+    }
 }

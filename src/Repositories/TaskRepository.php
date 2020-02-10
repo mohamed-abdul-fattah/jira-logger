@@ -63,6 +63,25 @@ class TaskRepository extends Repository implements ITaskRepository
     }
 
     /**
+     * Abort the current running task log
+     */
+    public function abortLog(): void
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $this->db->delete('logs', [
+                'ended_at' => null,
+                'log'      => null,
+            ]);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot abort. Please, run `setup` command');
+        }
+
+        $this->db->commit();
+    }
+
+    /**
      * Get the current running task
      *
      * @return Task|null

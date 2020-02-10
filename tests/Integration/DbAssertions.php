@@ -63,7 +63,7 @@ trait DbAssertions
     }
 
     /**
-     * Assert database has the expected value
+     * Assert database has a record with the given conditions
      *
      * @param string $table
      * @param array $conditions
@@ -75,5 +75,20 @@ trait DbAssertions
         $msg = "Failed asserting that the {$table} table has a record with the following conditions "
              . Json::encode($conditions);
         $this->assertTrue($count > 0, $msg);
+    }
+
+    /**
+     * Assert database doesn't have a record with the given conditions
+     *
+     * @param string $table
+     * @param array $conditions
+     */
+    public function assertDatabaseDoesntHave(string $table, array $conditions)
+    {
+        $count = $this->db->count($table, $conditions);
+
+        $msg = "Failed asserting that the {$table} table doesn't have a record with the following conditions "
+            . Json::encode($conditions);
+        $this->assertTrue($count == 0, $msg);
     }
 }
