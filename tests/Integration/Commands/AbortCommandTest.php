@@ -3,8 +3,8 @@
 namespace Tests\Integration\Commands;
 
 use App\Commands\AbortCommand;
-use Symfony\Component\Console\Tester\CommandTester;
 use Tests\Integration\IntegrationTestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Class AbortCommandTest
