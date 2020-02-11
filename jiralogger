@@ -9,6 +9,7 @@
  */
 
 use App\Commands\StopCommand;
+use App\Commands\SyncCommand;
 use App\Commands\SetupCommand;
 use App\Commands\AbortCommand;
 use App\Commands\StartCommand;
@@ -47,5 +48,6 @@ $app->add(new StartCommand);
 $app->add(new StopCommand);
 $app->add(new AbortCommand);
 $app->add(new StatusCommand);
+$app->add(new SyncCommand);
 
 $app->run();
