@@ -77,6 +77,7 @@ class SetupRepository extends Repository
      *
      * @param  string $uri
      * @throws DbException
+     * TODO: move to saveSetting DB method
      */
     private function setupPlatform(string $uri)
     {

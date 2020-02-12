@@ -10,5 +10,13 @@ namespace App\Repositories;
  */
 class PlatformRepository extends Repository
 {
-    //
+    /**
+     * Get Jira platform URI
+     *
+     * @return string|null
+     */
+    public function getPlatformUri()
+    {
+        return $this->db->getSetting('platform_uri');
+    }
 }

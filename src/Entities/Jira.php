@@ -11,14 +11,28 @@ namespace App\Entities;
 class Jira extends Platform
 {
     /**
+     * @var string
+     */
+    protected $platformUri;
+
+    /**
+     * Set Jira base URI
+     *
+     * @param string $platformUri
+     */
+    public function setPlatformUri(string $platformUri)
+    {
+        $this->platformUri = $platformUri;
+    }
+
+    /**
      * Get Jira server base URI
      *
      * @return string
      */
-    public function getBaseUri(): string
+    public function getPlatformUri(): string
     {
-        // TODO: Get Jira server URI from env or setup command
-        return '';
+        return $this->platformUri;
     }
 
     /**

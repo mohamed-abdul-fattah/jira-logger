@@ -20,6 +20,7 @@ interface IConnect
      * @return $this
      */
     public function setDispatcher(IRequestDispatcher $requestDispatcher);
+
     /**
      * Authenticate to platform (Jira, TFS, ...)
      *

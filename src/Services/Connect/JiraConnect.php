@@ -2,6 +2,7 @@
 
 namespace App\Services\Connect;
 
+use App\Repositories\JiraRepository;
 use Exception;
 use App\Entities\Jira;
 use App\Commands\Command;
@@ -27,7 +28,9 @@ class JiraConnect implements IConnect
      */
     public function __construct()
     {
+        $repo           = new JiraRepository;
         $this->platform = new Jira;
+        $this->platform->setPlatformUri($repo->getPlatformUri());
     }
 
     /**
@@ -60,7 +63,7 @@ class JiraConnect implements IConnect
         }
 
         try {
-            $res = $this->dispatcher->setBaseUri($this->platform->getBaseUri())
+            $res = $this->dispatcher->setBaseUri($this->platform->getPlatformUri())
                                     ->postJson(
                 $this->platform->getAuthUri(),
                 [
@@ -70,7 +73,7 @@ class JiraConnect implements IConnect
             );
             return $res->body();
         } catch (Exception $e) {
-            throw new RunTimeException($e->getMessage(), Command::EXIT_FAILURE);
+            throw new ConnectionException($e->getMessage(), Command::EXIT_FAILURE);
         }
     }
 }

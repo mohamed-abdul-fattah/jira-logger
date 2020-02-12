@@ -205,6 +205,20 @@ class DB
     }
 
     /**
+     * Get a key value pair from settings table
+     *
+     * @param  string $key
+     * @return mixed|null
+     */
+    public function getSetting(string $key)
+    {
+        return $this->query(
+            'SELECT value FROM `settings` WHERE key=:key LIMIT 1',
+            ['key' => $key]
+        );
+    }
+
+    /**
      * Apply WHERE clause conditions to given statement
      *
      * @param  string $sth
