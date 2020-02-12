@@ -66,7 +66,13 @@ class JiraConnectTest extends TestCase
         $response   = $this->createMock(IResponse::class);
         $response->expects($this->once())
                  ->method('body')
-                 ->willReturn('json');
+                 ->will($this->returnCallback(function () {
+                     $obj = new \stdClass();
+                     $obj->session        = new \stdClass();
+                     $obj->session->value = 'sessionId';
+
+                     return $obj;
+                 }));
         $dispatcher = $this->getMockBuilder(IRequestDispatcher::class)
                            ->onlyMethods(['setBaseUri', 'postJson', 'getJson'])
                            ->getMock();
@@ -78,8 +84,6 @@ class JiraConnectTest extends TestCase
                    ->willReturnSelf();
 
         $this->connect->setDispatcher($dispatcher);
-        $body = $this->connect->connect('username', 'password');
-
-        $this->assertTrue('json' === $body);
+        $this->connect->connect('username', 'password');
     }
 }

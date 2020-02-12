@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Services\Json;
+use App\Exceptions\JsonException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -32,7 +33,7 @@ class Response implements IResponse
      * Decode response JSON body
      *
      * @return mixed
-     * @throws \App\Exceptions\JsonException
+     * @throws JsonException
      */
     public function body()
     {

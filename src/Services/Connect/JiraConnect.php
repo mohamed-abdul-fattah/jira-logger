@@ -2,12 +2,11 @@
 
 namespace App\Services\Connect;
 
-use App\Repositories\JiraRepository;
 use Exception;
 use App\Entities\Jira;
 use App\Commands\Command;
 use App\Http\IRequestDispatcher;
-use App\Exceptions\RunTimeException;
+use App\Repositories\JiraRepository;
 use App\Exceptions\ConnectionException;
 
 /**
@@ -24,13 +23,18 @@ class JiraConnect implements IConnect
     protected $platform;
 
     /**
+     * @var JiraRepository
+     */
+    private $repo;
+
+    /**
      * JiraConnect constructor.
      */
     public function __construct()
     {
-        $repo           = new JiraRepository;
+        $this->repo     = new JiraRepository;
         $this->platform = new Jira;
-        $this->platform->setPlatformUri($repo->getPlatformUri());
+        $this->platform->setPlatformUri($this->repo->getPlatformUri());
     }
 
     /**
@@ -54,7 +58,6 @@ class JiraConnect implements IConnect
      *
      * @param  string $username
      * @param  string $password
-     * @return array|void|null
      */
     public function connect(string $username, string $password)
     {
@@ -71,7 +74,8 @@ class JiraConnect implements IConnect
                     'password' => $password,
                 ]
             );
-            return $res->body();
+            $info = $res->body();
+            $this->repo->saveSession($info->session->value);
         } catch (Exception $e) {
             throw new ConnectionException($e->getMessage(), Command::EXIT_FAILURE);
         }

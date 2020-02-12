@@ -10,5 +10,13 @@ namespace App\Repositories;
  */
 class JiraRepository extends PlatformRepository
 {
-    //
+    /**
+     * Save authentication session into database
+     *
+     * @param string $sessionId
+     */
+    public function saveSession(string $sessionId): void
+    {
+        $this->db->saveSetting('session_id', $sessionId);
+    }
 }

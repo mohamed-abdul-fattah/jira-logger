@@ -85,10 +85,11 @@ class ConnectCommand extends Command
             $password = $helper->ask($input, $output, $question);
         }
 
-        $res = $this->connectService
-                    ->setDispatcher($this->request)
-                    ->connect($username, $password);
-        // TODO: add session ID to DB
+        $output->writeln('<comment>Connecting...</comment>');
+        $this->connectService
+             ->setDispatcher($this->request)
+             ->connect($username, $password);
+        $output->writeln('<info>Connected successfully</info>');
         return self::EXIT_SUCCESS;
     }
 }

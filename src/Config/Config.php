@@ -3,6 +3,8 @@
 namespace App\Config;
 
 use PDO;
+use App\Http\Request;
+use App\Http\TestRequest;
 use App\Persistence\TestDb;
 
 /**
@@ -29,5 +31,19 @@ class Config
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $db;
+    }
+
+    /**
+     * Get command dispatcher
+     *
+     * @return Request|TestRequest
+     */
+    public static function getDispatcher()
+    {
+        if (isTestingEnv()) {
+            return new TestRequest;
+        }
+
+        return new Request;
     }
 }
