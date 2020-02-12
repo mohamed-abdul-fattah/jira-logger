@@ -212,10 +212,47 @@ class DB
      */
     public function getSetting(string $key)
     {
-        return $this->query(
-            'SELECT value FROM `settings` WHERE key=:key LIMIT 1',
+        /** @var stdClass $setting */
+        $setting = $this->fetch(
+            'SELECT value FROM `settings` WHERE key=:key ORDER BY settings.id DESC LIMIT 1',
             ['key' => $key]
         );
+
+        return $setting->value;
+    }
+
+    /**
+     * Save settings to database
+     *
+     * @param string $key
+     * @param $value
+     */
+    public function saveSetting(string $key, $value)
+    {
+        $setting = $this->count('settings', ['key' => $key]);
+
+        if ($setting > 0) {
+            $updated = $this->update(
+                'settings',
+                ['value' => $value],
+                ['key'   => $key]
+            );
+
+            if ($updated === false) {
+                throw new DbException('Cannot update setting!');
+            }
+
+            return;
+        }
+
+        $inserted = $this->insert('settings', [
+            'key'   => $key,
+            'value' => $value,
+        ]);
+
+        if ($inserted === false) {
+            throw new DbException('Cannot insert setting!');
+        }
     }
 
     /**

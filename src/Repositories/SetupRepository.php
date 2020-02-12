@@ -77,33 +77,9 @@ class SetupRepository extends Repository
      *
      * @param  string $uri
      * @throws DbException
-     * TODO: move to saveSetting DB method
      */
     private function setupPlatform(string $uri)
     {
-        $uris = $this->db->count('settings', ['key' => 'platform_uri']);
-
-        if ($uris > 0) {
-            $updated = $this->db->update('settings', [
-                'value' => $uri
-            ], [
-                'key'   => 'platform_uri'
-            ]);
-
-            if ($updated === false) {
-                throw new DbException('Cannot update platform URI!');
-            }
-
-            return;
-        }
-
-        $inserted = $this->db->insert('settings', [
-            'key'   => 'platform_uri',
-            'value' => $uri,
-        ]);
-
-        if ($inserted === false) {
-            throw new DbException('Cannot insert platform URI!');
-        }
+        $this->db->saveSetting('platform_uri', $uri);
     }
 }
