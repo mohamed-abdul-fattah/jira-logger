@@ -14,6 +14,13 @@ use App\Exceptions\EntityException;
 class Task extends Entity
 {
     /**
+     * Sync status codes
+     */
+    const NOT_SYNCED   = 0;
+    const SYNC_SUCCEED = 1;
+    const SYNC_FAILED  = 2;
+
+    /**
      * @var string
      */
     protected $taskId;
@@ -74,6 +81,14 @@ class Task extends Entity
     public function getStartedAt()
     {
         return $this->startedAt;
+    }
+
+    /**
+     * @param string|DateTime $date
+     */
+    public function setEndedAt($date)
+    {
+        $this->endedAt = $date;
     }
 
     /**

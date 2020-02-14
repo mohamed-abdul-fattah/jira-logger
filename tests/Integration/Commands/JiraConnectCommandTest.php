@@ -78,4 +78,19 @@ class JiraConnectCommandTest extends IntegrationTestCase
             'value' => 'sessionId',
         ]);
     }
+
+    public function itDisplaysNoItemsWithNoCompletedTasks()
+    {
+        //
+    }
+
+    public function itMarksTasksSyncedOnSuccessSync()
+    {
+        //
+    }
+
+    public function itDisplaysTaskFailureSyncReason()
+    {
+        //
+    }
 }

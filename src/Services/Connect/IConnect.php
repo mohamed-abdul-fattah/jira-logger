@@ -26,7 +26,14 @@ interface IConnect
      *
      * @param  string $username
      * @param  string $password
-     * @return mixed
+     * @return void
      */
     public function connect(string $username, string $password);
+
+    /**
+     * Sync completed tasks to platform
+     *
+     * @return void
+     */
+    public function sync();
 }

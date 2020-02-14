@@ -100,7 +100,7 @@ class TaskRepository extends Repository implements ITaskRepository
     public function getTask(array $args)
     {
         try {
-            return $this->db->getOne('logs', $args, Task::class);
+            return $this->db->first('logs', $args, Task::class);
         } catch (PDOException $e) {
             throw new DbException('Cannot query the database. Please, run `setup` command');
         }
@@ -115,8 +115,25 @@ class TaskRepository extends Repository implements ITaskRepository
     {
         try {
             return $this->db->count('logs', [
-                'synced' => 0
+                'synced' => Task::NOT_SYNCED
             ]);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot query the database. Please, run `setup` command');
+        }
+    }
+
+    /**
+     * Get all un synced completed logs
+     *
+     * @return array
+     */
+    public function getUnSyncedLogs()
+    {
+        try {
+            return $this->db->all('logs', [
+                'synced'   => Task::NOT_SYNCED,
+                'ended_at' => 'NOT NULL'
+            ], Task::class);
         } catch (PDOException $e) {
             throw new DbException('Cannot query the database. Please, run `setup` command');
         }

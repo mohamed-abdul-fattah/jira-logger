@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use stdClass;
 use Tests\TestCase;
 use App\Http\IResponse;
 use App\Http\IRequestDispatcher;
@@ -31,7 +32,7 @@ class JiraConnectTest extends TestCase
     /**
      * @test
      */
-    public function platformIsJira()
+    public function platformExists()
     {
         $this->assertObjectHasAttribute('platform', $this->connect);
     }
@@ -67,8 +68,8 @@ class JiraConnectTest extends TestCase
         $response->expects($this->once())
                  ->method('body')
                  ->will($this->returnCallback(function () {
-                     $obj = new \stdClass();
-                     $obj->session        = new \stdClass();
+                     $obj = new stdClass();
+                     $obj->session        = new stdClass();
                      $obj->session->value = 'sessionId';
 
                      return $obj;
@@ -83,7 +84,19 @@ class JiraConnectTest extends TestCase
                    ->method('setBaseUri')
                    ->willReturnSelf();
 
+        /** @var IRequestDispatcher $dispatcher */
         $this->connect->setDispatcher($dispatcher);
         $this->connect->connect('username', 'password');
+    }
+
+    /**
+     * @test
+     */
+    public function itCannotSyncWithoutDispatcher()
+    {
+        $this->expectException(ConnectionException::class);
+        $this->expectExceptionMessage('Dispatcher not found!');
+
+        $this->connect->sync();
     }
 }

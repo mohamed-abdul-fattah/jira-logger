@@ -2,7 +2,9 @@
 
 namespace App\Http;
 
+use Exception;
 use GuzzleHttp\Client;
+use App\Exceptions\ConnectionException;
 
 /**
  * Class Request
@@ -103,14 +105,27 @@ class Request implements IRequestDispatcher
             $uri = $this->unSlashUri($this->baseUri) . '/' . $this->unSlashUri($uri);
         }
 
-        $res = $this->client->request(
-            $method,
-            $uri,
-            [
-                'headers' => $headers,
-                'json'    => $params,
-            ]
-        );
+        try {
+            $res = $this->client->request(
+                $method,
+                $uri,
+                [
+                    'headers' => $headers,
+                    'json'    => $params,
+                ]
+            );
+        } catch (Exception $e) {
+            if ($e->getCode() === 0) {
+                throw new ConnectionException('Could not resolve host!. Please check your internet connection.');
+            } elseif (
+                $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
+                $e->getCode() === IResponse::HTTP_UNAUTHORIZED
+            ) {
+                throw new ConnectionException('Unauthorized!. Wrong username or password.');
+            } else {
+                throw new ConnectionException($e->getMessage());
+            }
+        }
 
         return new Response($res);
     }

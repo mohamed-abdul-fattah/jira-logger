@@ -48,6 +48,6 @@ $app->add(new StartCommand);
 $app->add(new StopCommand);
 $app->add(new AbortCommand);
 $app->add(new StatusCommand);
-$app->add(new SyncCommand);
+$app->add(new SyncCommand(new JiraConnect));
 
 $app->run();

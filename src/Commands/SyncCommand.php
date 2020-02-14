@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Services\Connect\IConnect;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -14,11 +15,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncCommand extends Command
 {
     /**
-     * SyncCommand constructor.
+     * @var IConnect
      */
-    public function __construct()
+    private $connect;
+
+    /**
+     * SyncCommand constructor.
+     *
+     * @param IConnect $connect
+     */
+    public function __construct(IConnect $connect)
     {
         parent::__construct();
+
+        $this->connect = $connect;
     }
 
     /**
@@ -37,6 +47,9 @@ class SyncCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->connect->setDispatcher($this->request)
+                      ->sync();
+
         return self::EXIT_SUCCESS;
     }
 }

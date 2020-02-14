@@ -3,9 +3,11 @@
 namespace App\Services\Connect;
 
 use Exception;
+use App\Entities\Task;
 use App\Entities\Jira;
 use App\Commands\Command;
 use App\Http\IRequestDispatcher;
+use App\Repositories\TaskRepository;
 use App\Repositories\JiraRepository;
 use App\Exceptions\ConnectionException;
 
@@ -25,16 +27,22 @@ class JiraConnect implements IConnect
     /**
      * @var JiraRepository
      */
-    private $repo;
+    private $jiraRepository;
+
+    /**
+     * @var TaskRepository
+     */
+    private $tasksRepository;
 
     /**
      * JiraConnect constructor.
      */
     public function __construct()
     {
-        $this->repo     = new JiraRepository;
-        $this->platform = new Jira;
-        $this->platform->setPlatformUri($this->repo->getPlatformUri());
+        $this->jiraRepository  = new JiraRepository;
+        $this->tasksRepository = new TaskRepository;
+        $this->platform        = new Jira;
+        $this->platform->setPlatformUri($this->jiraRepository->getPlatformUri());
     }
 
     /**
@@ -49,6 +57,7 @@ class JiraConnect implements IConnect
     public function setDispatcher(IRequestDispatcher $requestDispatcher)
     {
         $this->dispatcher = $requestDispatcher;
+        $this->dispatcher->setBaseUri($this->platform->getPlatformUri());
 
         return $this;
     }
@@ -61,13 +70,10 @@ class JiraConnect implements IConnect
      */
     public function connect(string $username, string $password)
     {
-        if (! $this->dispatcher) {
-            throw new ConnectionException('Dispatcher not found!', Command::EXIT_FAILURE);
-        }
+        $this->validateDispatcherExistence();
 
         try {
-            $res = $this->dispatcher->setBaseUri($this->platform->getPlatformUri())
-                                    ->postJson(
+            $res = $this->dispatcher->postJson(
                 $this->platform->getAuthUri(),
                 [
                     'username' => $username,
@@ -75,9 +81,46 @@ class JiraConnect implements IConnect
                 ]
             );
             $info = $res->body();
-            $this->repo->saveSession($info->session->value);
+            $this->jiraRepository->saveSession($info->session->value);
         } catch (Exception $e) {
-            throw new ConnectionException($e->getMessage(), Command::EXIT_FAILURE);
+            throw new ConnectionException($e->getMessage());
         }
+    }
+
+    /**
+     * Sync completed tasks to Jira as worklog
+     *
+     * @return array
+     */
+    public function sync()
+    {
+        $this->validateDispatcherExistence();
+        $tasks = $this->tasksRepository->getUnSyncedLogs();
+
+        $response = [];
+        foreach ($tasks as $task) {
+            $response[] = $this->syncLog($task);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @throws ConnectionException
+     */
+    private function validateDispatcherExistence(): void
+    {
+        if (! $this->dispatcher) {
+            throw new ConnectionException('Dispatcher not found!', Command::EXIT_FAILURE);
+        }
+    }
+
+    /**
+     * @param  Task $task
+     * @return array
+     */
+    private function syncLog(Task $task)
+    {
+        return [];
     }
 }
