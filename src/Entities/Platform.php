@@ -30,4 +30,12 @@ abstract class Platform extends Entity
      * @return string
      */
     public abstract function getAuthUri(): string;
+
+    /**
+     * Get add worklog platform URI
+     *
+     * @param  string $taskId
+     * @return string
+     */
+    public abstract function getWorkLogUri(string $taskId): string;
 }

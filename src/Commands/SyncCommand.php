@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Services\Connect\IConnect;
+use App\Repositories\TaskRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -20,6 +21,11 @@ class SyncCommand extends Command
     private $connect;
 
     /**
+     * @var TaskRepository
+     */
+    private $tasksRepo;
+
+    /**
      * SyncCommand constructor.
      *
      * @param IConnect $connect
@@ -28,7 +34,8 @@ class SyncCommand extends Command
     {
         parent::__construct();
 
-        $this->connect = $connect;
+        $this->tasksRepo = new TaskRepository;
+        $this->connect   = $connect;
     }
 
     /**
@@ -47,8 +54,21 @@ class SyncCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->connect->setDispatcher($this->request)
-                      ->sync();
+        $this->connect->setDispatcher($this->request);
+        $tasks = $this->tasksRepo->getUnSyncedLogs();
+
+        if (empty($tasks)) {
+            $output->writeln('<info>Logs are up to date.</info>');
+            return self::EXIT_SUCCESS;
+        }
+
+        $output->writeln('<comment>Syncing...</comment>');
+
+        $info = [];
+        foreach ($tasks as $task) {
+            $info[] = $this->connect->syncLog($task);
+        }
+        print_r($info);
 
         return self::EXIT_SUCCESS;
     }

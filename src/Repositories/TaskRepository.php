@@ -138,4 +138,16 @@ class TaskRepository extends Repository implements ITaskRepository
             throw new DbException('Cannot query the database. Please, run `setup` command');
         }
     }
+
+    /**
+     * Update task with the given arguments
+     *
+     * @param  string $taskId
+     * @param  array $args
+     * @return void
+     */
+    public function updateTask(string $taskId, array $args)
+    {
+        $this->db->update('logs', $args, ['task_id' => $taskId]);
+    }
 }

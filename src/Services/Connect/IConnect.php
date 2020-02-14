@@ -2,7 +2,7 @@
 
 namespace App\Services\Connect;
 
-use App\Entities\Platform;
+use App\Entities\Task;
 use App\Http\IRequestDispatcher;
 
 /**
@@ -31,9 +31,10 @@ interface IConnect
     public function connect(string $username, string $password);
 
     /**
-     * Sync completed tasks to platform
+     * Sync single task to platform worklog
      *
-     * @return void
+     * @param  Task $task
+     * @return array
      */
-    public function sync();
+    public function syncLog(Task $task): array;
 }

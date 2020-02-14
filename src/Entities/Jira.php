@@ -44,4 +44,15 @@ class Jira extends Platform
     {
         return '/rest/auth/latest/session';
     }
+
+    /**
+     * Get add worklog Jira URI
+     *
+     * @param  string $taskId
+     * @return string
+     */
+    public function getWorkLogUri(string $taskId): string
+    {
+        return "/rest/api/latest/issue/{$taskId}/worklog";
+    }
 }

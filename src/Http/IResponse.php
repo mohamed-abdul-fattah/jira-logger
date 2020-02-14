@@ -15,6 +15,7 @@ interface IResponse
      */
     const HTTP_UNAUTHENTICATED = 401;
     const HTTP_UNAUTHORIZED    = 403;
+    const HTTP_NOT_FOUND       = 404;
 
     /**
      * Get JSON decoded body

@@ -46,6 +46,11 @@ class Task extends Entity
     protected $log;
 
     /**
+     * @var int
+     */
+    protected $synced;
+
+    /**
      * Get task log ID
      *
      * @return string
@@ -100,6 +105,32 @@ class Task extends Entity
     }
 
     /**
+     * @param string $log
+     */
+    public function setLog(string $log)
+    {
+        $this->log = $log;
+    }
+
+    /**
+     * Get task work log
+     *
+     * @return string
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSynced()
+    {
+        return $this->synced;
+    }
+
+    /**
      * Log time taken working on an issue
      *
      * @param  string $end
@@ -116,5 +147,25 @@ class Task extends Entity
 
         $diff = date_diff($start, $end);
         return $this->log = $diff->format('%hh %im');
+    }
+
+    /**
+     * Convert log to seconds
+     *
+     * @return int
+     */
+    public function logInSeconds()
+    {
+        if (empty($this->log)) {
+            return 0;
+        }
+
+        preg_match('/(.+)h.*/', $this->log, $matches);
+        $hour = $matches[1];
+
+        preg_match('/^.+h\s(.+)m.*/', $this->log, $matches);
+        $minutes = $matches[1];
+
+        return (int) $hour * 60 * 60 + (int) $minutes * 60;
     }
 }

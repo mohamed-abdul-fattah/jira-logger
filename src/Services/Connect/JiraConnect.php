@@ -5,6 +5,7 @@ namespace App\Services\Connect;
 use Exception;
 use App\Entities\Task;
 use App\Entities\Jira;
+use App\Http\IResponse;
 use App\Commands\Command;
 use App\Http\IRequestDispatcher;
 use App\Repositories\TaskRepository;
@@ -88,24 +89,6 @@ class JiraConnect implements IConnect
     }
 
     /**
-     * Sync completed tasks to Jira as worklog
-     *
-     * @return array
-     */
-    public function sync()
-    {
-        $this->validateDispatcherExistence();
-        $tasks = $this->tasksRepository->getUnSyncedLogs();
-
-        $response = [];
-        foreach ($tasks as $task) {
-            $response[] = $this->syncLog($task);
-        }
-
-        return $response;
-    }
-
-    /**
      * @throws ConnectionException
      */
     private function validateDispatcherExistence(): void
@@ -116,11 +99,57 @@ class JiraConnect implements IConnect
     }
 
     /**
+     * Sync single task with Jira worklog
+     *
      * @param  Task $task
      * @return array
      */
-    private function syncLog(Task $task)
+    public function syncLog(Task $task): array
     {
-        return [];
+        $this->validateDispatcherExistence();
+        try {
+            $this->dispatcher->postJson(
+                $this->platform->getWorkLogUri($task->getTaskId()),
+                [
+                    'comment'          => $task->getDescription(),
+                    'timeSpentSeconds' => $task->logInSeconds(),
+                ]
+            );
+        } catch (Exception $e) {
+            $this->tasksRepository->updateTask(
+                $task->getTaskId(),
+                ['synced' => Task::SYNC_FAILED]
+            );
+
+            return [
+                'taskId' => $task->getTaskId(),
+                'sync'   => Task::SYNC_FAILED,
+                'reason' => $this->getSyncLogMsg($e->getCode()),
+            ];
+        }
+
+        $this->tasksRepository->updateTask(
+            $task->getTaskId(),
+            ['synced' => Task::SYNC_SUCCEED]
+        );
+        return [
+            'taskId' => $task->getTaskId(),
+            'sync'   => Task::SYNC_SUCCEED,
+        ];
+    }
+
+    /**
+     * @param  int $errorCode
+     * @return string
+     */
+    private function getSyncLogMsg(int $errorCode): string
+    {
+        if ($errorCode === IResponse::HTTP_NOT_FOUND) {
+            return 'Issue Does Not Exist';
+        } elseif ($errorCode === IResponse::HTTP_UNAUTHORIZED) {
+            return 'You do not have the permission to see the specified issue';
+        } else {
+            return 'Cannot add worklog to this issue';
+        }
     }
 }

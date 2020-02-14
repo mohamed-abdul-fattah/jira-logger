@@ -116,14 +116,14 @@ class Request implements IRequestDispatcher
             );
         } catch (Exception $e) {
             if ($e->getCode() === 0) {
-                throw new ConnectionException('Could not resolve host!. Please check your internet connection.');
+                throw new ConnectionException('Could not resolve host!. Please check your internet connection.', $e->getCode());
             } elseif (
                 $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
                 $e->getCode() === IResponse::HTTP_UNAUTHORIZED
             ) {
-                throw new ConnectionException('Unauthorized!. Wrong username or password.');
+                throw new ConnectionException('Unauthorized!. Wrong username or password.', $e->getCode());
             } else {
-                throw new ConnectionException($e->getMessage());
+                throw new ConnectionException($e->getMessage(), $e->getCode());
             }
         }
 

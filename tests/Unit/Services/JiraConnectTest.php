@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use stdClass;
 use Tests\TestCase;
+use App\Entities\Task;
 use App\Http\IResponse;
 use App\Http\IRequestDispatcher;
 use App\Services\Connect\JiraConnect;
@@ -97,6 +98,6 @@ class JiraConnectTest extends TestCase
         $this->expectException(ConnectionException::class);
         $this->expectExceptionMessage('Dispatcher not found!');
 
-        $this->connect->sync();
+        $this->connect->syncLog($this->createMock(Task::class));
     }
 }

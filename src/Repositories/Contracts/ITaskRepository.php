@@ -50,4 +50,13 @@ interface ITaskRepository
      * @return int
      */
     public function countUnSyncedLogs(): int;
+
+    /**
+     * Update task with the given arguments
+     *
+     * @param  string $taskId
+     * @param  array $args
+     * @return void
+     */
+    public function updateTask(string $taskId, array $args);
 }
