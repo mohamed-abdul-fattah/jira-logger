@@ -19,4 +19,14 @@ class JiraRepository extends PlatformRepository
     {
         $this->db->saveSetting('session_id', $sessionId);
     }
+
+    /**
+     * Get saved sessionId from database
+     *
+     * @return string|null
+     */
+    public function getSession()
+    {
+        return $this->db->getSetting('session_id');
+    }
 }

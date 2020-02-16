@@ -28,6 +28,11 @@ class TestRequest implements IRequestDispatcher
         return $this;
     }
 
+    public function setSessionId($sessionId): void
+    {
+        //
+    }
+
     public function json(
         string $method,
         string $uri,

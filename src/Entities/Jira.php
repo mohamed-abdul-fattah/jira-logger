@@ -55,4 +55,14 @@ class Jira extends Platform
     {
         return "/rest/api/latest/issue/{$taskId}/worklog";
     }
+
+    /**
+     * Get my Jira profile URI
+     *
+     * @return string
+     */
+    public function getProfileUri(): string
+    {
+        return '/rest/api/latest/myself';
+    }
 }

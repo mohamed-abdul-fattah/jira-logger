@@ -4,6 +4,7 @@ namespace App\Http;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use App\Exceptions\ConnectionException;
 
 /**
@@ -33,12 +34,18 @@ class Request implements IRequestDispatcher
     protected $baseUri;
 
     /**
+     * @var string
+     */
+    private $sessionId;
+
+    /**
      * Request constructor.
      */
     public function __construct()
     {
         $this->client   = new Client([
             'timeout'   => 30,
+            'cookies'   => true,
         ]);
     }
 
@@ -53,6 +60,16 @@ class Request implements IRequestDispatcher
         $this->baseUri = $baseUri;
 
         return $this;
+    }
+
+    /**
+     * Set saved session ID
+     *
+     * @param string $sessionId
+     */
+    public function setSessionId($sessionId): void
+    {
+        $this->sessionId = $sessionId;
     }
 
     /**
@@ -105,6 +122,12 @@ class Request implements IRequestDispatcher
             $uri = $this->unSlashUri($this->baseUri) . '/' . $this->unSlashUri($uri);
         }
 
+        $jar = null;
+        if (! empty($this->sessionId)) {
+            $jar = new CookieJar;
+            $jar = $jar->fromArray(['JSESSIONID' => $this->sessionId], 'jira.espace.ws');
+        }
+
         try {
             $res = $this->client->request(
                 $method,
@@ -112,11 +135,14 @@ class Request implements IRequestDispatcher
                 [
                     'headers' => $headers,
                     'json'    => $params,
+                    'cookies' => $jar,
                 ]
             );
         } catch (Exception $e) {
             if ($e->getCode() === 0) {
                 throw new ConnectionException('Could not resolve host!. Please check your internet connection.', $e->getCode());
+            } elseif ($e->getCode() === IResponse::HTTP_NOT_FOUND) {
+                throw new ConnectionException('404 Not Found!. Please, re-run `setup` command with proper platform URI', $e->getCode());
             } elseif (
                 $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
                 $e->getCode() === IResponse::HTTP_UNAUTHORIZED

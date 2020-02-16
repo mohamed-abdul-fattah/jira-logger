@@ -76,7 +76,7 @@ class JiraConnectTest extends TestCase
                      return $obj;
                  }));
         $dispatcher = $this->getMockBuilder(IRequestDispatcher::class)
-                           ->onlyMethods(['setBaseUri', 'postJson', 'getJson'])
+                           ->onlyMethods(['setBaseUri', 'postJson', 'getJson', 'setSessionId'])
                            ->getMock();
         $dispatcher->expects($this->once())
                    ->method('postJson')
@@ -99,5 +99,42 @@ class JiraConnectTest extends TestCase
         $this->expectExceptionMessage('Dispatcher not found!');
 
         $this->connect->syncLog($this->createMock(Task::class));
+    }
+
+    public function reasonProvider()
+    {
+        return[
+            [404, 'Issue Does Not Exist'],
+            [403, 'You do not have the permission to see the specified issue'],
+            [0, 'Cannot add worklog to this issue'],
+        ];
+    }
+
+    /**
+     * @param int $eCode
+     * @param string $eMsg
+     * @
+     * @dataProvider reasonProvider
+     */
+    public function itReturnsFailedSyncTaskWithReason($eCode, $eMsg)
+    {
+        $dispatcher = $this->createMock(IRequestDispatcher::class);
+        $dispatcher->expects($this->once())
+                   ->method('postJson')
+                   ->willThrowException(new ConnectionException('', $eCode));
+
+        $task = $this->createMock(Task::class);
+        $task->expects($this->exactly(3))
+             ->method('getTaskId')
+             ->willReturn('TASK-123');
+
+        $this->connect->setDispatcher($dispatcher);
+        $response = $this->connect->syncLog($task);
+
+        $this->assertSame([
+            'taskId' => 'TASK-123',
+            'sync'   => 2,
+            'reason' => $eMsg,
+        ], $response);
     }
 }

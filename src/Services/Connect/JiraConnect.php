@@ -135,7 +135,36 @@ class JiraConnect implements IConnect
         return [
             'taskId' => $task->getTaskId(),
             'sync'   => Task::SYNC_SUCCEED,
+            'reason' => null,
         ];
+    }
+
+    /**
+     * Check whether the platform URI connects platform server or not
+     *
+     * @return void
+     * @throws ConnectionException
+     */
+    public function checkPlatformConnection(): void
+    {
+        try {
+            $this->dispatcher->getJson($this->platform->getProfileUri());
+        } catch (Exception $e) {
+            if ($e->getCode() === IResponse::HTTP_NOT_FOUND) {
+                throw new ConnectionException(
+                    'Cannot connect to Jira server. Please, re-run `setup` with proper platform URI'
+                );
+            } elseif (
+                $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
+                $e->getCode() === IResponse::HTTP_UNAUTHORIZED
+            ) {
+                throw new ConnectionException(
+                    'Invalid credentials. Please, run `connect` command to login to Jira'
+                );
+            } else {
+                throw new ConnectionException($e->getMessage(), $e->getCode());
+            }
+        }
     }
 
     /**

@@ -2,8 +2,12 @@
 
 namespace App\Commands;
 
+use App\Entities\Task;
 use App\Services\Connect\IConnect;
+use App\Repositories\JiraRepository;
 use App\Repositories\TaskRepository;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -26,6 +30,11 @@ class SyncCommand extends Command
     private $tasksRepo;
 
     /**
+     * @var JiraRepository
+     */
+    private $platformRepo;
+
+    /**
      * SyncCommand constructor.
      *
      * @param IConnect $connect
@@ -34,8 +43,9 @@ class SyncCommand extends Command
     {
         parent::__construct();
 
-        $this->tasksRepo = new TaskRepository;
-        $this->connect   = $connect;
+        $this->tasksRepo    = new TaskRepository;
+        $this->platformRepo = new JiraRepository;
+        $this->connect      = $connect;
     }
 
     /**
@@ -55,6 +65,7 @@ class SyncCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->connect->setDispatcher($this->request);
+        $this->request->setSessionId($this->platformRepo->getSession());
         $tasks = $this->tasksRepo->getUnSyncedLogs();
 
         if (empty($tasks)) {
@@ -62,13 +73,29 @@ class SyncCommand extends Command
             return self::EXIT_SUCCESS;
         }
 
+        $this->connect->checkPlatformConnection();
         $output->writeln('<comment>Syncing...</comment>');
 
-        $info = [];
+        $table       = new Table($output);
+        $progressBar = new ProgressBar($output, count($tasks));
+        $info        = [];
+
         foreach ($tasks as $task) {
             $info[] = $this->connect->syncLog($task);
+            $progressBar->advance();
         }
-        print_r($info);
+
+        $table->setHeaders(['Task ID', 'Sync Status', 'Failure Reason']);
+        foreach ($info as $task) {
+            $table->addRow([
+                $task['taskId'],
+                $task['sync'] === Task::SYNC_SUCCEED ? '<info>Succeed</info>' : '<error>Failed</error>',
+                $task['reason'] ?? '__'
+            ]);
+        }
+        $progressBar->finish();
+        $output->writeln("\n<info>Logs synced successfully</info>");
+        $table->render();
 
         return self::EXIT_SUCCESS;
     }

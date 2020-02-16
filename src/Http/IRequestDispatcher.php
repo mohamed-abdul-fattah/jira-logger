@@ -19,6 +19,14 @@ interface IRequestDispatcher
     public function setBaseUri(string $baseUri);
 
     /**
+     * Set saved session ID
+     *
+     * @param  string $sessionId
+     * @return void
+     */
+    public function setSessionId($sessionId): void;
+
+    /**
      * Dispatch GET request with Content-Type and Accept JSON
      *
      * @param  string $uri

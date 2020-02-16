@@ -26,4 +26,11 @@ abstract class PlatformRepository extends Repository
      * @param string $sessionId
      */
     public abstract function saveSession(string $sessionId): void;
+
+    /**
+     * Get saved sessionId from database
+     *
+     * @return string|null
+     */
+    public abstract function getSession();
 }
