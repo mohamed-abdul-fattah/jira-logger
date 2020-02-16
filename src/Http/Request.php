@@ -125,7 +125,7 @@ class Request implements IRequestDispatcher
         $jar = null;
         if (! empty($this->sessionId)) {
             $jar = new CookieJar;
-            $jar = $jar->fromArray(['JSESSIONID' => $this->sessionId], 'jira.espace.ws');
+            $jar = $jar->fromArray(['JSESSIONID' => $this->sessionId], $this->domain());
         }
 
         try {
@@ -166,5 +166,17 @@ class Request implements IRequestDispatcher
     {
         $uri = ltrim($uri, "\/");
         return rtrim($uri, "\/");
+    }
+
+    /**
+     * Get domain name form the base URI
+     *
+     * @return string
+     */
+    protected function domain(): string
+    {
+        preg_match('/^https?:\/\/(.+)\//', $this->baseUri, $matches);
+
+        return $matches[1];
     }
 }
