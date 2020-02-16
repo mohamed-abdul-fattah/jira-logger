@@ -2,7 +2,10 @@
 
 namespace App\Http;
 
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
+use App\Exceptions\ConnectionException;
 
 /**
  * Class Request
@@ -31,12 +34,18 @@ class Request implements IRequestDispatcher
     protected $baseUri;
 
     /**
+     * @var string
+     */
+    private $sessionId;
+
+    /**
      * Request constructor.
      */
     public function __construct()
     {
         $this->client   = new Client([
             'timeout'   => 30,
+            'cookies'   => true,
         ]);
     }
 
@@ -51,6 +60,16 @@ class Request implements IRequestDispatcher
         $this->baseUri = $baseUri;
 
         return $this;
+    }
+
+    /**
+     * Set saved session ID
+     *
+     * @param string $sessionId
+     */
+    public function setSessionId($sessionId): void
+    {
+        $this->sessionId = $sessionId;
     }
 
     /**
@@ -103,14 +122,36 @@ class Request implements IRequestDispatcher
             $uri = $this->unSlashUri($this->baseUri) . '/' . $this->unSlashUri($uri);
         }
 
-        $res = $this->client->request(
-            $method,
-            $uri,
-            [
-                'headers' => $headers,
-                'json'    => $params,
-            ]
-        );
+        $jar = null;
+        if (! empty($this->sessionId)) {
+            $jar = new CookieJar;
+            $jar = $jar->fromArray(['JSESSIONID' => $this->sessionId], $this->domain());
+        }
+
+        try {
+            $res = $this->client->request(
+                $method,
+                $uri,
+                [
+                    'headers' => $headers,
+                    'json'    => $params,
+                    'cookies' => $jar,
+                ]
+            );
+        } catch (Exception $e) {
+            if ($e->getCode() === 0) {
+                throw new ConnectionException('Could not resolve host!. Please check your internet connection.', $e->getCode());
+            } elseif ($e->getCode() === IResponse::HTTP_NOT_FOUND) {
+                throw new ConnectionException('404 Not Found!. Please, re-run `setup` command with proper platform URI', $e->getCode());
+            } elseif (
+                $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
+                $e->getCode() === IResponse::HTTP_UNAUTHORIZED
+            ) {
+                throw new ConnectionException('Unauthorized!. Wrong username or password.', $e->getCode());
+            } else {
+                throw new ConnectionException($e->getMessage(), $e->getCode());
+            }
+        }
 
         return new Response($res);
     }
@@ -125,5 +166,17 @@ class Request implements IRequestDispatcher
     {
         $uri = ltrim($uri, "\/");
         return rtrim($uri, "\/");
+    }
+
+    /**
+     * Get domain name form the base URI
+     *
+     * @return string
+     */
+    protected function domain(): string
+    {
+        preg_match('/^https?:\/\/(.+)\//', $this->baseUri, $matches);
+
+        return $matches[1];
     }
 }

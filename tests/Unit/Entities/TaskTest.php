@@ -76,4 +76,32 @@ class TaskTest extends TestCase
 
         $this->assertSame($expected, $log);
     }
+
+    public function conversionProvider()
+    {
+        return [
+            ['0h 1m', 60],
+            ['0h 20m', 1200],
+            ['1h 0m', 3600],
+            ['1h 1m', 3660],
+            ['1h 20m', 4800],
+            ['20h 0m', 72000],
+            ['20h 1m', 72060],
+            ['20h 20m', 73200],
+        ];
+    }
+
+    /**
+     * @param string $log
+     * @param int $seconds
+     * @dataProvider conversionProvider
+     * @test
+     */
+    public function itConvertsLogIntoSeconds($log, $seconds)
+    {
+        $this->task->setLog($log);
+        $conversion = $this->task->logInSeconds();
+
+        $this->assertEquals($seconds, $conversion);
+    }
 }

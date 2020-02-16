@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Http\Request;
+use App\Config\Config;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
 /**
@@ -37,6 +38,7 @@ abstract class Command extends BaseCommand
     {
         parent::__construct(null);
 
-        $this->request = new Request;
+        /** @var Request request */
+        $this->request = Config::getDispatcher();
     }
 }

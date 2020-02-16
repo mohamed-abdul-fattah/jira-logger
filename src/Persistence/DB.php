@@ -118,19 +118,50 @@ class DB
     }
 
     /**
-     * Get one record from DB
+     * Return all result set from a query
+     *
+     * @param  string $statement
+     * @param  array $args
+     * @param  string $class
+     * @return array
+     */
+    public function fetchAll(string $statement, array $args = [], $class = stdClass::class)
+    {
+        $sth = $this->db->prepare($statement);
+        $sth->execute($args);
+
+        return $sth->fetchAll(PDO::FETCH_CLASS, $class);
+    }
+
+    /**
+     * Get the first record from DB
      *
      * @param  string $table
      * @param  array $args
      * @param  string $class
      * @return stdClass|mixed
      */
-    public function getOne(string $table, array $args = [], $class = stdClass::class)
+    public function first(string $table, array $args = [], $class = stdClass::class)
     {
         list($sth, $args) = $this->where("SELECT * FROM {$table} WHERE 1=1", $args);
         $sth .= ' LIMIT 1';
 
         return $this->fetch($sth, $args, $class);
+    }
+
+    /**
+     * Get all records from a table
+     *
+     * @param  string $table
+     * @param  array $args
+     * @param  string $class
+     * @return array
+     */
+    public function all(string $table, array $args = [], $class = stdClass::class)
+    {
+        list($sth, $args) = $this->where("SELECT * FROM {$table} WHERE 1=1", $args);
+
+        return $this->fetchAll($sth, $args, $class);
     }
 
     /**
@@ -205,6 +236,57 @@ class DB
     }
 
     /**
+     * Get a key value pair from settings table
+     *
+     * @param  string $key
+     * @return mixed|null
+     */
+    public function getSetting(string $key)
+    {
+        /** @var stdClass $setting */
+        $setting = $this->fetch(
+            'SELECT value FROM `settings` WHERE key=:key ORDER BY settings.id DESC LIMIT 1',
+            ['key' => $key]
+        );
+
+        return $setting->value;
+    }
+
+    /**
+     * Save settings to database
+     *
+     * @param string $key
+     * @param $value
+     */
+    public function saveSetting(string $key, $value)
+    {
+        $setting = $this->count('settings', ['key' => $key]);
+
+        if ($setting > 0) {
+            $updated = $this->update(
+                'settings',
+                ['value' => $value],
+                ['key'   => $key]
+            );
+
+            if ($updated === false) {
+                throw new DbException('Cannot update setting!');
+            }
+
+            return;
+        }
+
+        $inserted = $this->insert('settings', [
+            'key'   => $key,
+            'value' => $value,
+        ]);
+
+        if ($inserted === false) {
+            throw new DbException('Cannot insert setting!');
+        }
+    }
+
+    /**
      * Apply WHERE clause conditions to given statement
      *
      * @param  string $sth
@@ -220,7 +302,12 @@ class DB
                     $sth .= " AND `{$col}` IS NULL";
                     unset($conditions[$col]);
                     continue;
+                } elseif ($value === 'NOT NULL') {
+                    $sth .= " AND `{$col}` IS NOT NULL";
+                    unset($conditions[$col]);
+                    continue;
                 }
+
                 if ($bind) {
                     $sth .= " AND `{$col}`=:{$col}";
                 } else {

@@ -14,6 +14,13 @@ use App\Exceptions\EntityException;
 class Task extends Entity
 {
     /**
+     * Sync status codes
+     */
+    const NOT_SYNCED   = 0;
+    const SYNC_SUCCEED = 1;
+    const SYNC_FAILED  = 2;
+
+    /**
      * @var string
      */
     protected $taskId;
@@ -37,6 +44,11 @@ class Task extends Entity
      * @var string
      */
     protected $log;
+
+    /**
+     * @var int
+     */
+    protected $synced;
 
     /**
      * Get task log ID
@@ -77,11 +89,45 @@ class Task extends Entity
     }
 
     /**
+     * @param string|DateTime $date
+     */
+    public function setEndedAt($date)
+    {
+        $this->endedAt = $date;
+    }
+
+    /**
      * @return string
      */
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param string $log
+     */
+    public function setLog(string $log)
+    {
+        $this->log = $log;
+    }
+
+    /**
+     * Get task work log
+     *
+     * @return string
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSynced()
+    {
+        return $this->synced;
     }
 
     /**
@@ -101,5 +147,25 @@ class Task extends Entity
 
         $diff = date_diff($start, $end);
         return $this->log = $diff->format('%hh %im');
+    }
+
+    /**
+     * Convert log to seconds
+     *
+     * @return int
+     */
+    public function logInSeconds()
+    {
+        if (empty($this->log)) {
+            return 0;
+        }
+
+        preg_match('/(.+)h.*/', $this->log, $matches);
+        $hour = $matches[1];
+
+        preg_match('/^.+h\s(.+)m.*/', $this->log, $matches);
+        $minutes = $matches[1];
+
+        return (int) $hour * 60 * 60 + (int) $minutes * 60;
     }
 }

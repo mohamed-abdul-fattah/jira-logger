@@ -2,8 +2,9 @@
 
 namespace App\Services\Connect;
 
-use App\Entities\Platform;
+use App\Entities\Task;
 use App\Http\IRequestDispatcher;
+use App\Exceptions\ConnectionException;
 
 /**
  * Interface IConnect
@@ -20,12 +21,29 @@ interface IConnect
      * @return $this
      */
     public function setDispatcher(IRequestDispatcher $requestDispatcher);
+
     /**
      * Authenticate to platform (Jira, TFS, ...)
      *
      * @param  string $username
      * @param  string $password
-     * @return mixed
+     * @return void
      */
     public function connect(string $username, string $password);
+
+    /**
+     * Sync single task to platform worklog
+     *
+     * @param  Task $task
+     * @return array
+     */
+    public function syncLog(Task $task): array;
+
+    /**
+     * Check whether the platform URI connects platform server or not
+     *
+     * @return void
+     * @throws ConnectionException
+     */
+    public function checkPlatformConnection(): void;
 }

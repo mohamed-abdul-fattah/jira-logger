@@ -3,10 +3,13 @@
 namespace App\Services\Connect;
 
 use Exception;
+use App\Entities\Task;
 use App\Entities\Jira;
+use App\Http\IResponse;
 use App\Commands\Command;
 use App\Http\IRequestDispatcher;
-use App\Exceptions\RunTimeException;
+use App\Repositories\TaskRepository;
+use App\Repositories\JiraRepository;
 use App\Exceptions\ConnectionException;
 
 /**
@@ -23,11 +26,24 @@ class JiraConnect implements IConnect
     protected $platform;
 
     /**
+     * @var JiraRepository
+     */
+    private $jiraRepository;
+
+    /**
+     * @var TaskRepository
+     */
+    private $tasksRepository;
+
+    /**
      * JiraConnect constructor.
      */
     public function __construct()
     {
-        $this->platform = new Jira;
+        $this->jiraRepository  = new JiraRepository;
+        $this->tasksRepository = new TaskRepository;
+        $this->platform        = new Jira;
+        $this->platform->setPlatformUri($this->jiraRepository->getPlatformUri());
     }
 
     /**
@@ -42,6 +58,7 @@ class JiraConnect implements IConnect
     public function setDispatcher(IRequestDispatcher $requestDispatcher)
     {
         $this->dispatcher = $requestDispatcher;
+        $this->dispatcher->setBaseUri($this->platform->getPlatformUri());
 
         return $this;
     }
@@ -51,26 +68,117 @@ class JiraConnect implements IConnect
      *
      * @param  string $username
      * @param  string $password
-     * @return array|void|null
      */
     public function connect(string $username, string $password)
     {
-        if (! $this->dispatcher) {
-            throw new ConnectionException('Dispatcher not found!', Command::EXIT_FAILURE);
-        }
+        $this->validateDispatcherExistence();
 
         try {
-            $res = $this->dispatcher->setBaseUri($this->platform->getBaseUri())
-                                    ->postJson(
+            $res = $this->dispatcher->postJson(
                 $this->platform->getAuthUri(),
                 [
                     'username' => $username,
                     'password' => $password,
                 ]
             );
-            return $res->body();
+            $info = $res->body();
+            $this->jiraRepository->saveSession($info->session->value);
         } catch (Exception $e) {
-            throw new RunTimeException($e->getMessage(), Command::EXIT_FAILURE);
+            throw new ConnectionException($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws ConnectionException
+     */
+    private function validateDispatcherExistence(): void
+    {
+        if (! $this->dispatcher) {
+            throw new ConnectionException('Dispatcher not found!', Command::EXIT_FAILURE);
+        }
+    }
+
+    /**
+     * Sync single task with Jira worklog
+     *
+     * @param  Task $task
+     * @return array
+     */
+    public function syncLog(Task $task): array
+    {
+        $this->validateDispatcherExistence();
+        try {
+            $this->dispatcher->postJson(
+                $this->platform->getWorkLogUri($task->getTaskId()),
+                [
+                    'comment'          => $task->getDescription(),
+                    'timeSpentSeconds' => $task->logInSeconds(),
+                ]
+            );
+        } catch (Exception $e) {
+            $this->tasksRepository->updateTask(
+                $task->getTaskId(),
+                ['synced' => Task::SYNC_FAILED]
+            );
+
+            return [
+                'taskId' => $task->getTaskId(),
+                'sync'   => Task::SYNC_FAILED,
+                'reason' => $this->getSyncLogMsg($e->getCode()),
+            ];
+        }
+
+        $this->tasksRepository->updateTask(
+            $task->getTaskId(),
+            ['synced' => Task::SYNC_SUCCEED]
+        );
+        return [
+            'taskId' => $task->getTaskId(),
+            'sync'   => Task::SYNC_SUCCEED,
+            'reason' => null,
+        ];
+    }
+
+    /**
+     * Check whether the platform URI connects platform server or not
+     *
+     * @return void
+     * @throws ConnectionException
+     */
+    public function checkPlatformConnection(): void
+    {
+        try {
+            $this->dispatcher->getJson($this->platform->getProfileUri());
+        } catch (Exception $e) {
+            if ($e->getCode() === IResponse::HTTP_NOT_FOUND) {
+                throw new ConnectionException(
+                    'Cannot connect to Jira server. Please, re-run `setup` with proper platform URI'
+                );
+            } elseif (
+                $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
+                $e->getCode() === IResponse::HTTP_UNAUTHORIZED
+            ) {
+                throw new ConnectionException(
+                    'Invalid credentials. Please, run `connect` command to login to Jira'
+                );
+            } else {
+                throw new ConnectionException($e->getMessage(), $e->getCode());
+            }
+        }
+    }
+
+    /**
+     * @param  int $errorCode
+     * @return string
+     */
+    private function getSyncLogMsg(int $errorCode): string
+    {
+        if ($errorCode === IResponse::HTTP_NOT_FOUND) {
+            return 'Issue Does Not Exist';
+        } elseif ($errorCode === IResponse::HTTP_UNAUTHORIZED) {
+            return 'You do not have the permission to see the specified issue';
+        } else {
+            return 'Cannot add worklog to this issue';
         }
     }
 }

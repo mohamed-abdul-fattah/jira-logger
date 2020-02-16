@@ -11,11 +11,18 @@ namespace App\Entities;
 abstract class Platform extends Entity
 {
     /**
+     * Set platform base URI
+     *
+     * @param string $baseUri
+     */
+    public abstract function setPlatformUri(string $baseUri);
+
+    /**
      * Get platform base server URI
      *
      * @return string
      */
-    public abstract function getBaseUri(): string;
+    public abstract function getPlatformUri(): string;
 
     /**
      * Get platform authentication URI
@@ -23,4 +30,12 @@ abstract class Platform extends Entity
      * @return string
      */
     public abstract function getAuthUri(): string;
+
+    /**
+     * Get add worklog platform URI
+     *
+     * @param  string $taskId
+     * @return string
+     */
+    public abstract function getWorkLogUri(string $taskId): string;
 }
