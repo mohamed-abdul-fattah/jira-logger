@@ -3,6 +3,7 @@
 namespace App\Services\Connect;
 
 use Exception;
+use PDOException;
 use App\Entities\Task;
 use App\Entities\Jira;
 use App\Http\IResponse;
@@ -43,7 +44,6 @@ class JiraConnect implements IConnect
         $this->jiraRepository  = new JiraRepository;
         $this->tasksRepository = new TaskRepository;
         $this->platform        = new Jira;
-        $this->platform->setPlatformUri($this->jiraRepository->getPlatformUri());
     }
 
     /**
@@ -57,6 +57,12 @@ class JiraConnect implements IConnect
      */
     public function setDispatcher(IRequestDispatcher $requestDispatcher)
     {
+        try {
+            $this->platform->setPlatformUri($this->jiraRepository->getPlatformUri());
+        } catch (PDOException $e) {
+            throw new ConnectionException('Cannot get platform URI! Please, run `setup` command');
+        }
+
         $this->dispatcher = $requestDispatcher;
         $this->dispatcher->setBaseUri($this->platform->getPlatformUri());
 
