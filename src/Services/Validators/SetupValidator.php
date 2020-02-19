@@ -38,8 +38,8 @@ class SetupValidator
             throw new RunTimeException('Platform URI cannot be empty.');
         } elseif (! is_string($this->platformUri)) {
             throw new RunTimeException('Platform URI must be a string.');
-        } elseif (! preg_match('/^https?:\/\/.+\..+\/$/', $this->platformUri)) {
-            throw new RunTimeException('Platform URI must be in http(s)://example.domain/ format.');
+        } elseif (! preg_match('/^https:\/\/.+\..+\/?$/', $this->platformUri)) {
+            throw new RunTimeException('Platform URI must be in https://example.domain/ format.');
         }
     }
 }

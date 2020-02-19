@@ -249,7 +249,7 @@ class DB
             ['key' => $key]
         );
 
-        return $setting->value;
+        return $setting->value ?? null;
     }
 
     /**

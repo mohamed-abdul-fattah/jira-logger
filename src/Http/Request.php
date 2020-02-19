@@ -175,7 +175,7 @@ class Request implements IRequestDispatcher
      */
     protected function domain(): string
     {
-        preg_match('/^https?:\/\/(.+)\//', $this->baseUri, $matches);
+        preg_match('/^https:\/\/(.+)\/?$/', $this->baseUri, $matches);
 
         return $matches[1];
     }

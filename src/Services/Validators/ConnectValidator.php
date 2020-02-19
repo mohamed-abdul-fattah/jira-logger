@@ -2,7 +2,7 @@
 
 namespace App\Services\Validators;
 
-use App\Exceptions\RuntimeException;
+use App\Exceptions\RunTimeException;
 
 /**
  * Class ConnectValidator

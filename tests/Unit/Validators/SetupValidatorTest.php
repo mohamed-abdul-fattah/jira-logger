@@ -22,10 +22,10 @@ class SetupValidatorTest extends TestCase
             [[], 'Platform URI cannot be empty.'],
             [[1], 'Platform URI must be a string.'],
             [1, 'Platform URI must be a string.'],
-            ['jira.com', 'Platform URI must be in http(s)://example.domain/ format.'],
-            ['www.jira.com', 'Platform URI must be in http(s)://example.domain/ format.'],
-            ['http://jira.com', 'Platform URI must be in http(s)://example.domain/ format.'],
-            ['https://jira.com', 'Platform URI must be in http(s)://example.domain/ format.'],
+            ['jira.com', 'Platform URI must be in https://example.domain/ format.'],
+            ['www.jira.com', 'Platform URI must be in https://example.domain/ format.'],
+            ['http://jira.com', 'Platform URI must be in https://example.domain/ format.'],
+            ['http://jira.com/', 'Platform URI must be in https://example.domain/ format.'],
         ];
     }
 
@@ -49,7 +49,7 @@ class SetupValidatorTest extends TestCase
      */
     public function validPlatformUri()
     {
-        $validator = new SetupValidator('http://jira.com/');
+        $validator = new SetupValidator('https://jira.com');
         $validator->validate();
 
         $validator = new SetupValidator('https://jira.com/');
