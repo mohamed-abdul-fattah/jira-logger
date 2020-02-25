@@ -1,7 +1,9 @@
+![PHP](https://img.shields.io/badge/php-%3E%3D7.0-blue)
+![License](https://img.shields.io/badge/Licence-MIT-brightgreen)
 ![Overview](jiralogger.png)
 ## Table of Content
-* Installation
-    * Regular
+* [Installation](#installation)
+    * [Regular](#regular)
     * Docker
 * [Usage](#usage)
     * [Setup](#setup-command)
@@ -15,11 +17,14 @@
 * Contributing
 * ChangeLog
 
+## Installation
+### Regular
 ## Usage
 ### Setup Command
 `setup` command should be run once at the setup of the command line tool 
 to create the database and request for your Jira server URI.
 ```bash
+# https://jira.com/ is an example of your Jira server URI
 php jiralogger setup https://jira.com/
 ```
 
@@ -27,11 +32,11 @@ php jiralogger setup https://jira.com/
 `connect` command is your way for authentication with your Jira server. 
 Authentication is needed for logs syncing process.
 ```bash
-# This way, connec command will ask for your Jira username and password
+# This way, connect command will ask for your Jira username and password
 php jiralogger connect
 
 # You can provide username via command options
-php jiralogger -u john.doe
+php jiralogger connect -u john.doe
 ```
 
 ### Start Command
@@ -69,7 +74,7 @@ php jiralogger log:abort
 
 ### Sync Command
 Use `log:sync` command to sync and log times to Jira tasks. 
-Requires authentication (via `connect` command)
+Requires authentication (via [`connect`](#connect-command) command)
 ```bash
 php jiralogger log:sync
 ```
