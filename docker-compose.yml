@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  php-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jiralogger-cli
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app

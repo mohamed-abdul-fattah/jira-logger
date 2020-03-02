@@ -8,7 +8,7 @@
 ## Table of Content
 * [Installation](#installation)
     * [Regular](#regular)
-    * Docker
+    * [Docker](#docker)
 * [Usage](#usage)
     * [Setup](#setup-command)
     * [Connect](#connect-command)
@@ -32,6 +32,19 @@ cd jira-logger
 # List Jira logger commands
 php jiralogger
 ```
+
+### Docker
+- [Install docker](https://docs.docker.com/install/) locally
+- Run the following commands to setup Jira logger via docker
+```bash
+composer create-project mohamed-abdul-fattah/jira-logger
+cd jira-logger
+docker-compose up -d
+# Use the following command to interacte with the jiralogger
+# through the docker container
+docker exec -it jiralogger-cli php jiralogger log:status
+```
+
 ## Usage
 ### Setup Command
 `setup` command should be run once at the setup of the command line tool 
