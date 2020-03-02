@@ -42,7 +42,7 @@ php jiralogger connect -u john.doe
 ### Start Command
 Use `log:start` command to start a logging timer for a Jira task.
 ```bash
-# Running start with only task would start with "now" time
+# Running start with task ID would start with "now" time
 php jiralogger log:start TASK-123
 
 # Optionally, you can provide log starting time and log description
