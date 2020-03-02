@@ -1,6 +1,10 @@
-![PHP](https://img.shields.io/badge/php-%3E%3D7.0-blue)
-![License](https://img.shields.io/badge/Licence-MIT-brightgreen)
 ![Overview](jiralogger.png)
+# Jira Logger
+>Command line tool to automate Jira logging
+
+![Release](https://img.shields.io/badge/release-1.0.0-blue.svg)
+![PHP](https://img.shields.io/badge/php-^7.0-green)
+![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)
 ## Table of Content
 * [Installation](#installation)
     * [Regular](#regular)
@@ -14,11 +18,20 @@
     * [Abort](#abort-command)
     * [Sync](#sync-command)
 * Testing
-* Contributing
-* ChangeLog
+* [Contributing](#contributing)
+* [License](#license)
+* [Change Logs](#changelog)
 
 ## Installation
 ### Regular
+- Requires PHP version >= 7.0, and PHP SQLite extension.  
+- Run the following commands to get the Jira logger project
+```bash
+composer create-project mohamed-abdul-fattah/jira-logger
+cd jira-logger
+# List Jira logger commands
+php jiralogger
+```
 ## Usage
 ### Setup Command
 `setup` command should be run once at the setup of the command line tool 
@@ -78,3 +91,12 @@ Requires authentication (via [`connect`](#connect-command) command)
 ```bash
 php jiralogger log:sync
 ```
+
+## Contributing
+Please, read [CONTRIBUTING.md](/CONTRIBUTING.md) for details on the process of submitting pull requests to us.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details
+
+## ChangeLog
+Please, read the [CHANGELOG.md](/CHANGELOG.md) for more details about releases updates.
