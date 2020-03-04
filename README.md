@@ -1,6 +1,6 @@
 ![Overview](jiralogger.png)
 # Jira Logger
->Command line tool to automate Jira logging
+>A command line tool to automate Jira logging
 
 ![Release](https://img.shields.io/badge/release-1.0.0-blue.svg)
 ![PHP](https://img.shields.io/badge/php-^7.0-green)

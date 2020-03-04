@@ -4,9 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: jira-logger-cli:1.0.0
     container_name: jiralogger-cli
     working_dir: /app
     tty: true
     stdin_open: true
     volumes:
       - .:/app
+      - ~/.ssh:/root/.ssh

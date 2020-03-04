@@ -1,0 +1,103 @@
+gemfile: false
+quiet: false
+verify_signatures: true
+
+CommitMsg:
+  ALL:
+    requires_files: false
+    quiet: false
+
+  CapitalizedSubject:
+    enabled: true
+    description: 'Check subject capitalization'
+
+  EmptyMessage:
+    enabled: true
+    description: 'Check for empty commit message'
+    quiet: true
+
+  MessageFormat:
+    enabled: true
+    description: 'Check commit message matches expected pattern'
+    pattern: '(Issue-[0-9].+)\n\n(.+)'
+    expected_pattern_message: '<Issue-Id>\n\n<Commit Message Description>'
+    sample_message: 'DEFECT-1234\n\nRefactored Onboarding flow'
+
+  RussianNovel:
+    enabled: true
+    description: 'Check length of commit message'
+    quiet: true
+
+PreCommit:
+  ALL:
+    problem_on_unmodified_line: report
+    requires_files: true
+    required: false
+    quiet: false
+
+  AuthorEmail:
+    enabled: true
+    description: 'Check author email'
+    requires_files: false
+    required: true
+    quiet: true
+    pattern: '^[^@]+@.*$'
+
+  AuthorName:
+    enabled: true
+    description: 'Check for author name'
+    requires_files: false
+    required: true
+    quiet: true
+
+  BrokenSymlinks:
+    enabled: true
+    description: 'Check for broken symlinks'
+    quiet: true
+
+  FixMe:
+    enabled: true
+    description: 'Check for "token" strings'
+    required_executable: 'grep'
+    flags: ['-IEHnw']
+    keywords: ['BROKEN', 'BUG', 'ERROR', 'FIXME', 'HACK', 'NOTE', 'OPTIMIZE', 'REVIEW', 'TODO', 'WTF', 'XXX']
+    exclude:
+      - '**/*.yml'
+      - 'vendor/**'
+
+  FileSize:
+    enabled: true
+    description: 'Check for oversized files'
+    size_limit_bytes: 1_000_000
+    exclude:
+      - 'vendor/**'
+
+  PhpCs:
+    enabled: true
+    description: 'Analyze with PHP_CodeSniffer'
+    command: 'vendor/bin/phpcs'
+    flags: ['--standard=PSR2', '--report=csv']
+    include: '**/*.php'
+    exclude:
+      - 'vendor/**'
+
+  PhpStan:
+    description: 'Analyze with phpstan'
+    enabled: true
+    command: 'vendor/bin/phpstan'
+    flags: ['analyze', 'src']
+    include:
+      - '**/*.php'
+    exclude:
+      - 'vendor/**'
+
+PrePush:
+  ALL:
+    requires_files: false
+    required: false
+    quiet: false
+
+  PhpUnit:
+    enabled: true
+    description: 'Run PhpUnit test suite'
+    command: 'vendor/bin/phpunit'

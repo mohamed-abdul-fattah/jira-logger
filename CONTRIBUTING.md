@@ -11,6 +11,12 @@ When contributing to this repository, please first discuss the change you wish t
 4. Create feature branches. Don't ask us to pull from your master branch.
 5. One pull request per feature. If you want to do more than one thing, send multiple pull requests.
 6. Send coherent history. Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please squash them before submitting.
-7. Be patient, issues and pull-requests are reviewed in free time.
+7. Use `git` via docker to allow overcommit to run pre-commit and pre-push hooks
+```bash
+docker exec -it jiralogger-cli git commit
+docker exec -it jiralogger-cli git push origin <branch>
+```
+8. Be patient, issues and pull-requests are reviewed in free time.
+
 
 #### Happy Coding!
