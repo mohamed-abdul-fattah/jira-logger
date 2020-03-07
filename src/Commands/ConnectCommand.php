@@ -40,7 +40,7 @@ class ConnectCommand extends Command
     protected function configure()
     {
         $this->setName('connect')
-             ->setDescription('Connect to Jira server')
+             ->setDescription('Connects to Jira server')
              ->addOption(
                  'username',
                  'u',

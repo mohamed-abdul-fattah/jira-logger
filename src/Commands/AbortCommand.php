@@ -38,7 +38,7 @@ class AbortCommand extends Command
     protected function configure()
     {
         $this->setName('log:abort')
-             ->setDescription('Abort current running task log')
+             ->setDescription('Aborts current running task log')
              ->addOption(
                  'yes',
                  'y',

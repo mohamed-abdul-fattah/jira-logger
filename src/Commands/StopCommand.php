@@ -38,7 +38,7 @@ class StopCommand extends Command
     protected function configure()
     {
         $this->setName('log:stop')
-             ->setDescription('Stop task logging timer')
+             ->setDescription('Stops task logging timer')
              ->addOption(
                  'time',
                  't',

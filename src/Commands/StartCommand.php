@@ -36,22 +36,22 @@ class StartCommand extends Command
     protected function configure()
     {
         $this->setName('log:start')
-             ->setDescription('Start task logging timer')
+             ->setDescription('Starts task logging timer')
              ->addArgument(
                  'task id',
                  InputArgument::REQUIRED,
                  'Jira task ID. e.g. JIRA-123'
              )->addOption(
                  'time',
-                't',
-                InputOption::VALUE_REQUIRED,
-                'Task log start time in hh:ii format. e.g 13:01'
-            )->addOption(
-                'description',
-                'd',
-                InputOption::VALUE_REQUIRED,
-                'Task log description'
-            );
+                 't',
+                 InputOption::VALUE_REQUIRED,
+                 'Task log start time in hh:ii format. e.g 13:01'
+             )->addOption(
+                 'description',
+                 'd',
+                 InputOption::VALUE_REQUIRED,
+                 'Task log description'
+             );
     }
 
     /**
