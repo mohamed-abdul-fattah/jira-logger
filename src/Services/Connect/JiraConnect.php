@@ -22,6 +22,12 @@ use App\Exceptions\ConnectionException;
 class JiraConnect implements IConnect
 {
     /**
+     * Github releases/tags URL
+     */
+    const TAGS_URL       = 'https://api.github.com/repos/mohamed-abdul-fattah/jira-logger/tags';
+    const GITHUB_VERSION = 'application/vnd.github.v3+json';
+
+    /**
      * @var Jira
      */
     protected $platform;
@@ -160,9 +166,8 @@ class JiraConnect implements IConnect
                 throw new ConnectionException(
                     'Cannot connect to Jira server. Please, re-run `setup` with proper platform URI'
                 );
-            } elseif (
-                $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
-                $e->getCode() === IResponse::HTTP_UNAUTHORIZED
+            } elseif ($e->getCode() === IResponse::HTTP_UNAUTHENTICATED
+                   || $e->getCode() === IResponse::HTTP_UNAUTHORIZED
             ) {
                 throw new ConnectionException(
                     'Invalid credentials. Please, run `connect` command to login to Jira'
@@ -171,6 +176,31 @@ class JiraConnect implements IConnect
                 throw new ConnectionException($e->getMessage(), $e->getCode());
             }
         }
+    }
+
+    /**
+     * Check whether there are a new version released or not
+     *
+     * @return string
+     */
+    public function checkUpdates(): string
+    {
+        // Unset base URI to request an external URI
+        $this->dispatcher->setBaseUri(null);
+        /** @var IResponse $response */
+        $response = $this->dispatcher->getJson(
+            self::TAGS_URL,
+            [],
+            ['Accept' => self::GITHUB_VERSION]
+        );
+
+        $versions = array_column($response->body(), 'name');
+        $release  = end($versions);
+        if (version_compare($release, APP_VERSION, '>')) {
+            return $release;
+        }
+
+        return APP_VERSION;
     }
 
     /**

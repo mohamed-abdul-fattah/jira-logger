@@ -46,4 +46,11 @@ interface IConnect
      * @throws ConnectionException
      */
     public function checkPlatformConnection(): void;
+
+    /**
+     * Check whether there are a new version released or not
+     *
+     * @return string
+     */
+    public function checkUpdates(): string;
 }

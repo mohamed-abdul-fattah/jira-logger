@@ -23,7 +23,7 @@ class TestRequest implements IRequestDispatcher
         return $this->json(self::HTTP_POST, $uri, $params, $headers);
     }
 
-    public function setBaseUri(string $baseUri)
+    public function setBaseUri($baseUri)
     {
         return $this;
     }
@@ -39,7 +39,12 @@ class TestRequest implements IRequestDispatcher
         array $params = [],
         array $headers = []
     ) {
-        $response = new MockResponse();
+        // Workaround until DI is introduced
+        if (empty($this->baseUri)) {
+            $response = new MockResponse('[{"name": "0.2.0"}]');
+        } else {
+            $response = new MockResponse('{"session": {"value": "sessionId"}}');
+        }
 
         return new Response($response);
     }

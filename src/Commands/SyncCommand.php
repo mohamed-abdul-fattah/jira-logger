@@ -70,6 +70,7 @@ class SyncCommand extends Command
 
         if (empty($tasks)) {
             $output->writeln('<info>Logs are up to date.</info>');
+            $this->checkUpdates($output);
             return self::EXIT_SUCCESS;
         }
 
@@ -97,6 +98,23 @@ class SyncCommand extends Command
         $output->writeln("\n<info>Logs synced successfully</info>");
         $table->render();
 
+        $this->checkUpdates($output);
         return self::EXIT_SUCCESS;
+    }
+
+    /**
+     * Check whether there is a new version released or not
+     *
+     * @param OutputInterface $output
+     */
+    private function checkUpdates(OutputInterface $output): void
+    {
+        $output->writeln("\n<comment>Checking for updates...</comment>");
+        $release = $this->connect->checkUpdates();
+        if ($release === APP_VERSION) {
+            $output->writeln('<info>All is up to date</info>');
+        } else {
+            $output->writeln("New version has been released <info>{$release}</info>");
+        }
     }
 }

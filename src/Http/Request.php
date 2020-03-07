@@ -52,10 +52,10 @@ class Request implements IRequestDispatcher
     /**
      * Set dispatcher base URI
      *
-     * @param  string $baseUri
+     * @param  string|null $baseUri
      * @return $this
      */
-    public function setBaseUri(string $baseUri)
+    public function setBaseUri($baseUri)
     {
         $this->baseUri = $baseUri;
 
@@ -123,7 +123,7 @@ class Request implements IRequestDispatcher
         }
 
         $jar = null;
-        if (! empty($this->sessionId)) {
+        if (! empty($this->sessionId) && ! empty($this->baseUri)) {
             $jar = new CookieJar;
             $jar = $jar->fromArray(['JSESSIONID' => $this->sessionId], $this->domain());
         }
@@ -140,12 +140,17 @@ class Request implements IRequestDispatcher
             );
         } catch (Exception $e) {
             if ($e->getCode() === 0) {
-                throw new ConnectionException('Could not resolve host!. Please check your internet connection.', $e->getCode());
+                throw new ConnectionException(
+                    'Could not resolve host!. Please check your internet connection.',
+                    $e->getCode()
+                );
             } elseif ($e->getCode() === IResponse::HTTP_NOT_FOUND) {
-                throw new ConnectionException('404 Not Found!. Please, re-run `setup` command with proper platform URI', $e->getCode());
-            } elseif (
-                $e->getCode() === IResponse::HTTP_UNAUTHENTICATED ||
-                $e->getCode() === IResponse::HTTP_UNAUTHORIZED
+                throw new ConnectionException(
+                    '404 Not Found!. The requested URL is not valid.',
+                    $e->getCode()
+                );
+            } elseif ($e->getCode() === IResponse::HTTP_UNAUTHENTICATED
+                   || $e->getCode() === IResponse::HTTP_UNAUTHORIZED
             ) {
                 throw new ConnectionException('Unauthorized!. Wrong username or password.', $e->getCode());
             } else {
