@@ -7,6 +7,7 @@ use App\Exceptions\DbException;
 use App\Exceptions\RunTimeException;
 use App\Repositories\SetupRepository;
 use App\Services\Validators\SetupValidator;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -71,6 +72,33 @@ class SetupCommand extends Command
         }
         $output->writeln('<info>Setup is complete</info>');
 
+        $io = new SymfonyStyle($input, $output);
+        $io->newline();
+        foreach ($this->guidelines() as $guideline) {
+            foreach (str_split($guideline) as $char) {
+                usleep(30000);
+                $io->write($char);
+            }
+            $io->newline();
+            sleep(1);
+        }
+
         return self::EXIT_SUCCESS;
+    }
+
+    /**
+     * Guidelines for users after installation
+     *
+     * @return array
+     */
+    private function guidelines(): array
+    {
+        return [
+            'Welcome to Jira Logger command line assistant.',
+            'You can run `list` command to list the available commands.',
+            'For further information please, refer to the documentation <https://github.com/mohamed-abdul-fattah/jira-logger>.',
+            'For any problems/issues arise please, open up an issue on Github.',
+            'Mohamed Abdul-Fattah'
+        ];
     }
 }
