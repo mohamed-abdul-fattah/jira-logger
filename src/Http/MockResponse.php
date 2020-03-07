@@ -13,6 +13,16 @@ use Psr\Http\Message\ResponseInterface;
  */
 class MockResponse implements ResponseInterface
 {
+    /**
+     * @var string
+     */
+    private $message;
+
+    public function __construct(string $responseMessage)
+    {
+        $this->message = $responseMessage;
+    }
+
     public function getStatusCode()
     {
         // Placeholder
@@ -75,7 +85,7 @@ class MockResponse implements ResponseInterface
 
     public function getBody()
     {
-        return '{"session": {"value": "sessionId"}}';
+        return $this->message;
     }
 
     public function withBody(StreamInterface $body)

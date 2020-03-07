@@ -13,10 +13,10 @@ interface IRequestDispatcher
     /**
      * Set base URI for dispatcher
      *
-     * @param  string $baseUri
+     * @param  string|null $baseUri
      * @return $this
      */
-    public function setBaseUri(string $baseUri);
+    public function setBaseUri($baseUri);
 
     /**
      * Set saved session ID

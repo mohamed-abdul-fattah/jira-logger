@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jira-logger-cli:1.2.0
+    image: jira-logger-cli:1.0.0
     container_name: jiralogger-cli
     tty: true
     stdin_open: true
