@@ -42,7 +42,7 @@ cd jira-logger
 docker-compose up -d
 # Use the following command to interacte with the jiralogger
 # through the docker container
-docker exec -it jiralogger-cli php jiralogger log:status
+docker exec -it jiralogger-cli php jiralogger
 ```
 
 ## Usage
