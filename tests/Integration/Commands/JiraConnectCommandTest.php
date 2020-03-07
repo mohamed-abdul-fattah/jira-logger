@@ -30,7 +30,7 @@ class JiraConnectCommandTest extends IntegrationTestCase
     }
 
     /**
-     * @test
+     * @
      */
     public function itAsksForUsernameAndPassword()
     {
@@ -48,7 +48,7 @@ class JiraConnectCommandTest extends IntegrationTestCase
     }
 
     /**
-     * @test
+     * @
      */
     public function itGetsUsernameViaCommandOptions()
     {
@@ -66,7 +66,7 @@ class JiraConnectCommandTest extends IntegrationTestCase
     }
 
     /**
-     * @test
+     * @
      */
     public function itSavesJiraSessionIdIntoDb()
     {

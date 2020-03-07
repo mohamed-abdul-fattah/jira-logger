@@ -54,7 +54,7 @@ class SyncCommand extends Command
     protected function configure()
     {
         $this->setName('log:sync')
-             ->setDescription('Sync completed logs with Jira');
+             ->setDescription('Syncs completed logs with Jira');
     }
 
     /**

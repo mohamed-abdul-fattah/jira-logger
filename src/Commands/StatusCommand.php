@@ -37,7 +37,7 @@ class StatusCommand extends Command
     protected function configure()
     {
         $this->setName('log:status')
-             ->setDescription('Get current log status, whether a task has started logging or not');
+             ->setDescription('Gets current log status, whether a task has started logging or not');
     }
 
     /**
