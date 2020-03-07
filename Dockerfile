@@ -1,6 +1,9 @@
 FROM php:7.3-cli
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG APP_USER=jiralogger
+ARG USER_HOME=/home/jiralogger
+ARG APP_PATH=${USER_HOME}/jiralogger
 
 RUN apt-get -q update
 # Install Ruby & Git
@@ -24,11 +27,14 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "unlink('composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
 
-COPY . /app
-COPY entrypoint.sh /tmp/entrypoint.sh
+RUN useradd -md ${USER_HOME} -u 1000 -s /bin/bash ${APP_USER}
+
+COPY --chown=${APP_USER}:${APP_USER} . ${APP_PATH}
+COPY --chown=${APP_USER}:${APP_USER} entrypoint.sh /tmp/entrypoint.sh
 RUN chmod +x /tmp/entrypoint.sh
 
-WORKDIR /app
+WORKDIR ${APP_PATH}
+USER ${APP_USER}
 
 ENTRYPOINT ["/tmp/entrypoint.sh"]
 
