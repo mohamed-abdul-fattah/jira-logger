@@ -24,6 +24,7 @@ class SyncCommandTest extends IntegrationTestCase
     {
         parent::setUp();
 
+        $this->setPlatformUri();
         $this->app->add(new SyncCommand(new JiraConnect));
         $command       = $this->app->find('log:sync');
         $this->command = new CommandTester($command);
