@@ -182,6 +182,6 @@ class Request implements IRequestDispatcher
     {
         preg_match('/^https:\/\/(.+)\/?$/', $this->baseUri, $matches);
 
-        return $matches[1];
+        return $this->unSlashUri($matches[1]);
     }
 }

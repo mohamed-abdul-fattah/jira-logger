@@ -45,7 +45,7 @@ class IntegrationTestCase extends TestCase
      */
     protected function startLog(
         $taskId = 'TASK-123',
-        $desc   = 'Working on TASK-123 issue'
+        $desc = 'Working on TASK-123 issue'
     ) {
         $time = date('Y-m-d H:i', strtotime('-1 hour'));
 
@@ -54,5 +54,13 @@ class IntegrationTestCase extends TestCase
             'started_at'  => $time,
             'description' => $desc,
         ]);
+    }
+
+    /**
+     * Set testing platform URI
+     */
+    protected function setPlatformUri(): void
+    {
+        $this->db->saveSetting('platform_uri', 'https://example.com');
     }
 }
