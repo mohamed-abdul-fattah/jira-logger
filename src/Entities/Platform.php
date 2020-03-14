@@ -6,7 +6,7 @@ namespace App\Entities;
  * Class Platform
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  1.0.0
+ * @since  0.1.0
  */
 abstract class Platform extends Entity
 {
@@ -15,21 +15,21 @@ abstract class Platform extends Entity
      *
      * @param string $baseUri
      */
-    public abstract function setPlatformUri(string $baseUri);
+    abstract public function setPlatformUri(string $baseUri);
 
     /**
      * Get platform base server URI
      *
      * @return string
      */
-    public abstract function getPlatformUri(): string;
+    abstract public function getPlatformUri(): string;
 
     /**
      * Get platform authentication URI
      *
      * @return string
      */
-    public abstract function getAuthUri(): string;
+    abstract public function getAuthUri(): string;
 
     /**
      * Get add worklog platform URI
@@ -37,5 +37,5 @@ abstract class Platform extends Entity
      * @param  string $taskId
      * @return string
      */
-    public abstract function getWorkLogUri(string $taskId): string;
+    abstract public function getWorkLogUri(string $taskId): string;
 }

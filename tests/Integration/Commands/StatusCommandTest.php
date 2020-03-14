@@ -10,7 +10,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  * Class StatusCommandTest
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  1.0.0
+ * @since  0.1.0
  */
 class StatusCommandTest extends IntegrationTestCase
 {
@@ -68,7 +68,7 @@ class StatusCommandTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function ZeroUnSyncedTasks()
+    public function zeroUnSyncedTasks()
     {
         $this->command->execute([]);
 

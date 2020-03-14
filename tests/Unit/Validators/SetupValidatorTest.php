@@ -10,7 +10,7 @@ use App\Services\Validators\SetupValidator;
  * Class SetupValidatorTest
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  1.0.0
+ * @since  0.1.0
  */
 class SetupValidatorTest extends TestCase
 {

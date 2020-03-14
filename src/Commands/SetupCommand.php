@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class SetupCommand
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  1.0.0
+ * @since  0.1.0
  */
 class SetupCommand extends Command
 {
@@ -96,7 +96,8 @@ class SetupCommand extends Command
         return [
             'Welcome to Jira Logger command line assistant.',
             'You can run `list` command to list the available commands.',
-            'For further information please, refer to the documentation <https://github.com/mohamed-abdul-fattah/jira-logger>.',
+            'For further information please, refer to the documentation ' .
+            '<https://github.com/mohamed-abdul-fattah/jira-logger>.',
             'For any problems/issues arise please, open up an issue on Github.',
             'Mohamed Abdul-Fattah'
         ];

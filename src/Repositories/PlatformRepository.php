@@ -6,7 +6,7 @@ namespace App\Repositories;
  * Class PlatformRepository
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  1.0.0
+ * @since  0.1.0
  */
 abstract class PlatformRepository extends Repository
 {
@@ -25,12 +25,12 @@ abstract class PlatformRepository extends Repository
      *
      * @param string $sessionId
      */
-    public abstract function saveSession(string $sessionId): void;
+    abstract public function saveSession(string $sessionId): void;
 
     /**
      * Get saved sessionId from database
      *
      * @return string|null
      */
-    public abstract function getSession();
+    abstract public function getSession();
 }
