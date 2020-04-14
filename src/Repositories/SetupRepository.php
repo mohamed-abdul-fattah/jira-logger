@@ -13,6 +13,11 @@ use App\Exceptions\DbException;
 class SetupRepository extends Repository
 {
     /**
+     * Default application timezone
+     */
+    const UTC_TIMEZONE = 'UTC';
+
+    /**
      * Setup database
      */
     public function setupDb()
@@ -36,8 +41,19 @@ class SetupRepository extends Repository
         $this->db->beginTransaction();
 
         $this->setupPlatform($uri);
+        $this->setupTimezone();
 
         $this->db->commit();
+    }
+
+    /**
+     * Setup application timezone
+     *
+     * @param string $timezone
+     */
+    public function setupTimezone(string $timezone = self::UTC_TIMEZONE)
+    {
+        $this->db->saveSetting('timezone', $timezone);
     }
 
     /**

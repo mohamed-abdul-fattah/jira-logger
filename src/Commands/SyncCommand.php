@@ -109,7 +109,7 @@ class SyncCommand extends Command
      */
     private function checkUpdates(OutputInterface $output): void
     {
-        $output->writeln("\n<comment>Checking for updates...</comment>");
+        $output->writeln("\n<comment>Checking for new releases...</comment>");
         $release = $this->connect->checkUpdates();
         if ($release === APP_VERSION) {
             $output->writeln('<info>All is up to date</info>');

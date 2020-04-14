@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Repositories\SetupRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -14,6 +15,21 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
  */
 class TimezoneCommand extends Command
 {
+    /**
+     * @var SetupRepository
+     */
+    private $setupRepo;
+
+    /**
+     * TimezoneCommand constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setupRepo = new SetupRepository;
+    }
+
     /**
      * Configure timezone command
      */
@@ -38,6 +54,10 @@ class TimezoneCommand extends Command
         );
 
         $timezone = $helper->ask($input, $output, $question);
+
+        $output->writeln('<comment>Updating timezone...</comment>');
+        $this->setupRepo->setupTimezone($timezone);
+        $output->writeln('<info>Timezone updated successfully</info>');
 
         return self::EXIT_SUCCESS;
     }
