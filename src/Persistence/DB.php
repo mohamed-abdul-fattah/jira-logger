@@ -244,10 +244,14 @@ class DB
     public function getSetting(string $key)
     {
         /** @var stdClass $setting */
-        $setting = $this->fetch(
-            'SELECT value FROM `settings` WHERE key=:key ORDER BY settings.id DESC LIMIT 1',
-            ['key' => $key]
-        );
+        try {
+            $setting = $this->fetch(
+                'SELECT value FROM `settings` WHERE key=:key ORDER BY settings.id DESC LIMIT 1',
+                ['key' => $key]
+            );
+        } catch (PDOException $e) {
+            throw new DbException('Cannot get setting value!');
+        }
 
         return $setting->value ?? null;
     }
@@ -260,7 +264,11 @@ class DB
      */
     public function saveSetting(string $key, $value)
     {
-        $setting = $this->count('settings', ['key' => $key]);
+        try {
+            $setting = $this->count('settings', ['key' => $key]);
+        } catch (PDOException $e) {
+            throw new DbException('Cannot get settings!');
+        }
 
         if ($setting > 0) {
             $updated = $this->update(

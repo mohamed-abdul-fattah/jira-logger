@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use Exception;
 use App\Http\Request;
 use App\Config\Config;
 use App\Repositories\SetupRepository;
@@ -56,6 +57,10 @@ abstract class Command extends BaseCommand
     private function bootstrap()
     {
         /** Configure timezone */
-        date_default_timezone_set($this->setupRepo->getTimezone());
+        try {
+            date_default_timezone_set($this->setupRepo->getTimezone());
+        } catch (Exception $e) {
+            // Log error with issue https://github.com/mohamed-abdul-fattah/jira-logger/issues/11
+        }
     }
 }

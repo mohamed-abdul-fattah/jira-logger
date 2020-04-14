@@ -53,13 +53,18 @@ class SetupRepository extends Repository
      */
     public function setupTimezone(string $timezone = self::UTC_TIMEZONE)
     {
-        $this->db->saveSetting('timezone', $timezone);
+        try {
+            $this->db->saveSetting('timezone', $timezone);
+        } catch (DbException $e) {
+            throw new DbException('Cannot save timezone. Please, run `setup` command');
+        }
     }
 
     /**
      * Get timezone value
      *
      * @return mixed|null
+     * @throws DbException
      */
     public function getTimezone()
     {
