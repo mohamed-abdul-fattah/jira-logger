@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use App\Http\Request;
 use App\Config\Config;
+use App\Repositories\SetupRepository;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
 /**
@@ -32,6 +33,11 @@ abstract class Command extends BaseCommand
     protected $request;
 
     /**
+     * @var SetupRepository
+     */
+    protected $setupRepo;
+
+    /**
      * Command constructor.
      */
     public function __construct()
@@ -39,6 +45,17 @@ abstract class Command extends BaseCommand
         parent::__construct(null);
 
         /** @var Request request */
-        $this->request = Config::getDispatcher();
+        $this->request   = Config::getDispatcher();
+        $this->setupRepo = new SetupRepository;
+        $this->bootstrap();
+    }
+
+    /**
+     * Bootstrap application with configuration
+     */
+    private function bootstrap()
+    {
+        /** Configure timezone */
+        date_default_timezone_set($this->setupRepo->getTimezone());
     }
 }

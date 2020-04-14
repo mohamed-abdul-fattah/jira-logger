@@ -57,6 +57,16 @@ class SetupRepository extends Repository
     }
 
     /**
+     * Get timezone value
+     *
+     * @return mixed|null
+     */
+    public function getTimezone()
+    {
+        return $this->db->getSetting('timezone');
+    }
+
+    /**
      * Create logs table for logging tasks
      */
     private function createLogsTable()
