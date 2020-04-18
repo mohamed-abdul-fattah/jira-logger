@@ -130,13 +130,14 @@ class LogTimerTest extends TestCase
              ->method('getRunningTask')
              ->willReturn(null);
         $repo->expects($this->once())
-             ->method('countUnSyncedLogs')
-             ->willReturn(0);
+             ->method('getUnSyncedLogs')
+             ->willReturn([]);
 
         $timer = new LogTimer($repo);
-        list($logs, $task) = $timer->getStatus();
+        list($logs, $loggedTime, $task) = $timer->getStatus();
 
         $this->assertEquals(0, $logs);
+        $this->assertEquals('0h 0m', $loggedTime);
         $this->assertTrue(is_null($task));
     }
 
@@ -145,18 +146,23 @@ class LogTimerTest extends TestCase
      */
     public function returnOneWhenThereIsStoppedUnSyncedTask()
     {
+        $task = $this->createMock(Task::class);
+        $task->expects($this->once())
+             ->method('logInSeconds')
+             ->willReturn(600); // 10 minutes
         $repo = $this->createMock(ITaskRepository::class);
         $repo->expects($this->once())
              ->method('getRunningTask')
              ->willReturn(null);
         $repo->expects($this->once())
-             ->method('countUnSyncedLogs')
-             ->willReturn(1);
+             ->method('getUnSyncedLogs')
+             ->willReturn([$task]);
 
         $timer = new LogTimer($repo);
-        list($logs, $task) = $timer->getStatus();
+        list($logs, $loggedTime, $task) = $timer->getStatus();
 
         $this->assertEquals(1, $logs);
+        $this->assertEquals('0h 10m', $loggedTime);
         $this->assertTrue(is_null($task));
     }
 
@@ -166,17 +172,20 @@ class LogTimerTest extends TestCase
     public function returnTaskWhenThereIsRunningTask()
     {
         $task = $this->createMock(Task::class);
+        $task->expects($this->once())
+             ->method('logInSeconds')
+             ->willReturn(60); // One minute
         $repo = $this->createMock(ITaskRepository::class);
         $repo->expects($this->once())
              ->method('getRunningTask')
              ->willReturn($task);
         $repo->expects($this->once())
-             ->method('countUnSyncedLogs')
-             ->willReturn(1);
+             ->method('getUnSyncedLogs')
+             ->willReturn([$task]);
 
         $timer = new LogTimer($repo);
         /** @noinspection PhpUnusedLocalVariableInspection */
-        list($_, $task) = $timer->getStatus();
+        list($_, $_, $task) = $timer->getStatus();
 
         $this->assertTrue($task instanceof Task);
     }

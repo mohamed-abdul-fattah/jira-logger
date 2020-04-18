@@ -107,27 +107,11 @@ class TaskRepository extends Repository implements ITaskRepository
     }
 
     /**
-     * Get the number of the un-synced logs
-     *
-     * @return int
-     */
-    public function countUnSyncedLogs(): int
-    {
-        try {
-            return $this->db->count('logs', [
-                'synced' => Task::NOT_SYNCED
-            ]);
-        } catch (PDOException $e) {
-            throw new DbException('Cannot query the database. Please, run `setup` command');
-        }
-    }
-
-    /**
      * Get all un synced completed logs
      *
      * @return array
      */
-    public function getUnSyncedLogs()
+    public function getUnSyncedLogs(): array
     {
         try {
             return $this->db->all('logs', [

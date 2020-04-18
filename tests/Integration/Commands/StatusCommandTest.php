@@ -81,9 +81,28 @@ class StatusCommandTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function oneSyncedTasksWhenOneRunningTaskLog()
+    public function zeroUnSyncedTasksWhenOneRunningTaskLog()
     {
         $this->startLog();
+
+        $this->command->execute([]);
+
+        $this->assertStringContainsString(
+            '0 task(s)',
+            $this->command->getDisplay()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function oneUnSyncedTaskForOneLoggedTask()
+    {
+        $this->db->insert('logs', [
+            'task_id'    => 'TASK',
+            'started_at' => date('Y-m-d H:i', strtotime('-1 hour')),
+            'ended_at'   => date('Y-m-d H:i'),
+        ]);
 
         $this->command->execute([]);
 

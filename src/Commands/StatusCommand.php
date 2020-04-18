@@ -48,7 +48,7 @@ class StatusCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var Task $task */
-        list($unSyncedLogs, $task) = $this->timer->getStatus();
+        list($unSyncedLogs, $loggedTime, $task) = $this->timer->getStatus();
         $table = new Table($output);
 
         if (empty($task)) {
@@ -67,6 +67,7 @@ class StatusCommand extends Command
 
         $table->setRows(array_merge([
             ['Un-synced logs', "<info>{$unSyncedLogs} task(s)</info>"],
+            ['Total logged time', "<info>{$loggedTime}</info>"],
             new TableSeparator,
         ], $taskInfo));
 
