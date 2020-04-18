@@ -180,4 +180,29 @@ class LogTimerTest extends TestCase
 
         $this->assertTrue($task instanceof Task);
     }
+
+    public function convertForHumanProvider()
+    {
+        return [
+            [1, '0h 0m'],
+            [60, '0h 1m'],
+            [121, '0h 2m'],
+            [3600, '1h 0m'],
+            [3610, '1h 0m'],
+            [3660, '1h 1m'],
+            [7260, '2h 1m'],
+        ];
+    }
+
+    /**
+     * @param int $seconds
+     * @param string $human
+     * @test
+     * @dataProvider convertForHumanProvider
+     */
+    public function itConvertsSecondsForHuman($seconds, $human)
+    {
+        $expected = LogTimer::timeForHuman($seconds);
+        $this->assertSame($human, $expected);
+    }
 }

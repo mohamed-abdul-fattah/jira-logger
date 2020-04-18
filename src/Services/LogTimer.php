@@ -20,6 +20,25 @@ class LogTimer
     protected $taskRepo;
 
     /**
+     * Convert time in seconds into more human readable
+     *
+     * @param  int $seconds
+     * @return string
+     */
+    public static function timeForHuman(int $seconds): string
+    {
+        $minutes = $seconds / 60;
+        if ($minutes < 60) {
+            $minutes = floor($minutes);
+            return "0h {$minutes}m";
+        }
+
+        $hours   = floor($minutes / 60);
+        $minutes = floor($minutes % 60);
+        return "{$hours}h {$minutes}m";
+    }
+
+    /**
      * LogTimer constructor.
      *
      * @param ITaskRepository $repository
