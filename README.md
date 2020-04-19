@@ -63,8 +63,8 @@ php jiralogger setup https://jira.com/
 ### Timezone Command
 Use `config:timezone` command to configure the start and end log time timezone
 ```bash
-php jirelaogger config:timezone
-# Choose between UTC and Africa/Cairo tiemzones
+php jiralogger config:timezone
+# Choose between UTC and Africa/Cairo timezones
 ```
 
 ### Connect Command
