@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Entities\Task;
+use App\Services\LogTimer;
 use App\Services\Connect\IConnect;
 use App\Repositories\JiraRepository;
 use App\Repositories\TaskRepository;
@@ -80,23 +81,29 @@ class SyncCommand extends Command
         $table       = new Table($output);
         $progressBar = new ProgressBar($output, count($tasks));
         $info        = [];
+        $total       = 0;
 
         foreach ($tasks as $task) {
+            /** @var Task $task */
             $info[] = $this->connect->syncLog($task);
+            $total += $task->logInSeconds();
             $progressBar->advance();
         }
 
-        $table->setHeaders(['Task ID', 'Sync Status', 'Failure Reason']);
+        $table->setHeaders(['Task ID', 'Logged Time', 'Sync Status', 'Failure Reason']);
         foreach ($info as $task) {
             $table->addRow([
                 $task['taskId'],
-                $task['sync'] === Task::SYNC_SUCCEED ? '<info>Succeed</info>' : '<error>Failed</error>',
-                $task['reason'] ?? '__'
+                $task['logged'],
+                $task['sync'] === Task::SYNC_SUCCEED ? '<info>Succeed</info>' : '<error>Failed!</error>',
+                $task['reason'] ?? '__',
             ]);
         }
         $progressBar->finish();
-        $output->writeln("\n<info>Logs synced successfully</info>");
+        $output->writeln(PHP_EOL . "<info>Logs synced successfully</info>");
         $table->render();
+
+        $output->writeln('Total logged time is <info>' . LogTimer::timeForHuman($total)  . ' </info>');
 
         $this->checkUpdates($output);
         return self::EXIT_SUCCESS;
@@ -109,7 +116,7 @@ class SyncCommand extends Command
      */
     private function checkUpdates(OutputInterface $output): void
     {
-        $output->writeln("\n<comment>Checking for updates...</comment>");
+        $output->writeln(PHP_EOL . "<comment>Checking for new releases...</comment>");
         $release = $this->connect->checkUpdates();
         if ($release === APP_VERSION) {
             $output->writeln('<info>All is up to date</info>');

@@ -45,11 +45,11 @@ interface ITaskRepository
     public function getRunningTask();
 
     /**
-     * Get the un-synced yet logs count
+     * Get all un synced completed logs
      *
-     * @return int
+     * @return array
      */
-    public function countUnSyncedLogs(): int;
+    public function getUnSyncedLogs(): array;
 
     /**
      * Update task with the given arguments

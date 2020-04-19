@@ -11,6 +11,7 @@
     * [Docker](#docker)
 * [Usage](#usage)
     * [Setup](#setup-command)
+    * [Timezone](#timezone-command)
     * [Connect](#connect-command)
     * [Start](#start-command)
     * [Stop](#stop-command)
@@ -24,17 +25,22 @@
 
 ## Installation
 ### Regular
-- Requires PHP version >= 7.0, and PHP SQLite extension.  
+- Pre-requisites
+    - PHP version >= 7.2
+    - PHP SQLite extension
+    - [Composer](https://getcomposer.org) package manager
 - Run the following commands to get the Jira logger project
 ```bash
 composer create-project mohamed-abdul-fattah/jira-logger
 cd jira-logger
 # List Jira logger commands
-php jiralogger
+php jiralogger list
 ```
 
 ### Docker
-- [Install docker](https://docs.docker.com/install/) locally
+- Pre-requisites
+    - Install [Docker](https://docs.docker.com/install/) locally
+    - [Composer](https://getcomposer.org) package manager
 - Run the following commands to setup Jira logger via docker
 ```bash
 composer create-project mohamed-abdul-fattah/jira-logger
@@ -52,6 +58,13 @@ to create the database and request for your Jira server URI.
 ```bash
 # https://jira.com/ is an example of your Jira server URI
 php jiralogger setup https://jira.com/
+```
+
+### Timezone Command
+Use `config:timezone` command to configure the start and end log time timezone
+```bash
+php jiralogger config:timezone
+# Choose between UTC and Africa/Cairo timezones
 ```
 
 ### Connect Command

@@ -5,7 +5,6 @@ namespace App\Commands;
 use Exception;
 use App\Exceptions\DbException;
 use App\Exceptions\RunTimeException;
-use App\Repositories\SetupRepository;
 use App\Services\Validators\SetupValidator;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,21 +19,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SetupCommand extends Command
 {
-    /**
-     * @var SetupRepository
-     */
-    protected $repo;
-
-    /**
-     * SetupCommand constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->repo = new SetupRepository;
-    }
-
     /**
      * Configure setup command
      */
@@ -63,8 +47,8 @@ class SetupCommand extends Command
 
         $output->writeln('<comment>Setup in progress...</comment>');
         try {
-            $this->repo->setupDb();
-            $this->repo->seedDb($platformUri);
+            $this->setupRepo->setupDb();
+            $this->setupRepo->seedDb($platformUri);
         } catch (DbException $e) {
             throw new RunTimeException($e->getMessage());
         } catch (Exception $e) {

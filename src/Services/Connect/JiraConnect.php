@@ -127,27 +127,30 @@ class JiraConnect implements IConnect
                     'timeSpentSeconds' => $task->logInSeconds(),
                 ]
             );
+
+            $this->tasksRepository->updateTask(
+                $task->getTaskId(),
+                ['synced' => Task::SYNC_SUCCEED]
+            );
+
+            $sync   = Task::SYNC_SUCCEED;
+            $reason = null;
         } catch (Exception $e) {
             $this->tasksRepository->updateTask(
                 $task->getTaskId(),
                 ['synced' => Task::SYNC_FAILED]
             );
 
-            return [
-                'taskId' => $task->getTaskId(),
-                'sync'   => Task::SYNC_FAILED,
-                'reason' => $this->getSyncLogMsg($e->getCode()),
-            ];
+            $sync   = Task::SYNC_FAILED;
+            $reason = $this->getSyncLogMsg($e->getCode());
         }
 
-        $this->tasksRepository->updateTask(
-            $task->getTaskId(),
-            ['synced' => Task::SYNC_SUCCEED]
-        );
+
         return [
             'taskId' => $task->getTaskId(),
-            'sync'   => Task::SYNC_SUCCEED,
-            'reason' => null,
+            'sync'   => $sync,
+            'reason' => $reason,
+            'logged' => $task->getLog(),
         ];
     }
 

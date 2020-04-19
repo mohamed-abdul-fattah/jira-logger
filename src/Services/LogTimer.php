@@ -20,6 +20,25 @@ class LogTimer
     protected $taskRepo;
 
     /**
+     * Convert time in seconds into more human readable
+     *
+     * @param  int $seconds
+     * @return string
+     */
+    public static function timeForHuman(int $seconds): string
+    {
+        $minutes = $seconds / 60;
+        if ($minutes < 60) {
+            $minutes = floor($minutes);
+            return "0h {$minutes}m";
+        }
+
+        $hours   = floor($minutes / 60);
+        $minutes = floor($minutes % 60);
+        return "{$hours}h {$minutes}m";
+    }
+
+    /**
      * LogTimer constructor.
      *
      * @param ITaskRepository $repository
@@ -88,14 +107,24 @@ class LogTimer
     /**
      * Get current log status, whether there is a running task or not
      * 1st return result indicates the un-synced tasks
-     * 2nd return result is the current running task
+     * 2nd return result is the total logged time
+     * 3rd return result is the current running task
      *
      * @return array
      */
     public function getStatus()
     {
+        $total = 0;
+        $logs  = 0;
+        foreach ($this->taskRepo->getUnSyncedLogs() as $log) {
+            /** @var Task $log */
+            $total += $log->logInSeconds();
+            $logs++;
+        }
+
         return [
-            $this->taskRepo->countUnSyncedLogs(),
+            $logs,
+            self::timeForHuman($total),
             $this->taskRepo->getRunningTask()
         ];
     }
