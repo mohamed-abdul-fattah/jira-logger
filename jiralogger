@@ -16,6 +16,7 @@ use App\Commands\StartCommand;
 use App\Commands\StatusCommand;
 use App\Commands\ConnectCommand;
 use App\Commands\TimezoneCommand;
+use App\Commands\AttributesCommand;
 use App\Services\Connect\JiraConnect;
 use Symfony\Component\Console\Application;
 
@@ -51,5 +52,6 @@ $app->add(new AbortCommand);
 $app->add(new StatusCommand);
 $app->add(new SyncCommand(new JiraConnect));
 $app->add(new TimezoneCommand);
+$app->add(new AttributesCommand);
 
 $app->run();

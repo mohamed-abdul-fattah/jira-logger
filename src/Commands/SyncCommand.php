@@ -103,7 +103,7 @@ class SyncCommand extends Command
         $output->writeln(PHP_EOL . "<info>Logs synced successfully</info>");
         $table->render();
 
-        $output->writeln('Total logged time is <info>' . LogTimer::timeForHuman($total)  . ' </info>');
+        $output->writeln('Total logged time is <info>' . LogTimer::timeForHuman($total) . ' </info>');
 
         $this->checkUpdates($output);
         return self::EXIT_SUCCESS;
