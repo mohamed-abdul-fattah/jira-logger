@@ -5,7 +5,6 @@
  * Jira Logger CLI Tool
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 
 use App\Commands\StopCommand;

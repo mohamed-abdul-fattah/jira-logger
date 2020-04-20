@@ -11,7 +11,6 @@ use App\Persistence\TestDb;
  * Class Config
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  v1.0.0
  */
 class Config
 {
@@ -45,5 +44,18 @@ class Config
         }
 
         return new Request;
+    }
+
+    /**
+     * Get configuration by key
+     *
+     * @param  string $key
+     * @return mixed|null
+     */
+    public static function get(string $key)
+    {
+        $configurations = require __DIR__ . '/app.php';
+
+        return $configurations[$key] ?? null;
     }
 }

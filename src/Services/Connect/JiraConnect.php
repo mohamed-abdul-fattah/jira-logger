@@ -145,7 +145,6 @@ class JiraConnect implements IConnect
             $reason = $this->getSyncLogMsg($e->getCode());
         }
 
-
         return [
             'taskId' => $task->getTaskId(),
             'sync'   => $sync,
