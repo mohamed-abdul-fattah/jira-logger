@@ -2,8 +2,8 @@
 # Jira Logger
 >A command line tool to automate Jira logging
 
-![Release](https://img.shields.io/badge/release-0.2.2-blue.svg)
-![PHP](https://img.shields.io/badge/php-^7.0-green)
+![Release](https://img.shields.io/badge/release-0.3.0-blue.svg)
+![PHP](https://img.shields.io/badge/php-^7.2-green)
 ![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)
 ## Table of Content
 * [Installation](#installation)

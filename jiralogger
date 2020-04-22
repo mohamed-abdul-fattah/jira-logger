@@ -25,7 +25,7 @@ require __DIR__ . '/vendor/autoload.php';
  *
  * @see https://semver.org/
  */
-define('APP_VERSION', '0.2.2');
+define('APP_VERSION', '0.3.0');
 
 /**
  * Application name to be displayed on listing commands
