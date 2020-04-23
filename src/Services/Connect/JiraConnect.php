@@ -198,7 +198,7 @@ class JiraConnect implements IConnect
         );
 
         $versions = array_column($response->body(), 'name');
-        $release  = end($versions);
+        $release  = array_shift($versions);
         if (version_compare($release, APP_VERSION, '>')) {
             return $release;
         }
