@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Exception;
+use App\Config\Config;
+use App\Exceptions\RunTimeException;
 use Symfony\Component\Console\Application;
 
 /**
@@ -33,10 +36,28 @@ class Launcher
         $this->collector = new CommandCollector;
     }
 
+    /**
+     * @throws RunTimeException
+     * @throws Exception
+     */
     public function run()
     {
-        // collect commands and resolve their deps
-        // init
+        $this->init();
+
+        foreach ($this->collector->getCollection() as $class) {
+            $this->app->add(IoC::resolve($class));
+        }
+
         $this->app->run();
+    }
+
+    /**
+     * Init dependencies container
+     */
+    private function init()
+    {
+        foreach (Config::get('manifesto') as $abstract => $concrete) {
+            IoC::inject($abstract, $concrete);
+        }
     }
 }
