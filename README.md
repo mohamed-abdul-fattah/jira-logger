@@ -118,6 +118,15 @@ Requires authentication (via [`connect`](#connect-command) command)
 php jiralogger log:sync
 ```
 
+### Tempo
+[Tempo](https://www.tempo.io/) is a Jira add-on for better time tracking and reports.
+Before using Tempo features, check with your admin whether it is installed on you Jira server or not.
+#### Attributes Command
+Use `tempo:attributes` to save custom attributes added by you Jira admin.
+```bash
+php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}'
+```
+
 ## Contributing
 Please, read [CONTRIBUTING.md](/CONTRIBUTING.md) for details on the process of submitting pull requests to us.
 

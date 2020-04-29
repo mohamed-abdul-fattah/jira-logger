@@ -67,6 +67,7 @@ class StatusCommand extends Command
 
         $table->setRows(array_merge([
             ['Un-synced logs', "<info>{$unSyncedLogs} task(s)</info>"],
+            new TableSeparator,
             ['Total logged time', "<info>{$loggedTime}</info>"],
             new TableSeparator,
         ], $taskInfo));
