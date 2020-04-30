@@ -13,9 +13,10 @@ class TempoRepository extends Repository
      * Save Tempo attributes into database
      *
      * @param string $attributes
+     * @param string $group
      */
-    public function saveAttributes(string $attributes)
+    public function saveAttributes(string $attributes, $group = 'default')
     {
-        $this->db->saveSetting('tempo:attributes', $attributes);
+        $this->db->saveSetting('tempo:attributes:' . $group, $attributes);
     }
 }

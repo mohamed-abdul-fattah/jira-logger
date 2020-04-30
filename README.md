@@ -18,6 +18,8 @@
     * [Status](#status-command)
     * [Abort](#abort-command)
     * [Sync](#sync-command)
+    * [Tempo](#tempo)
+        * [Attributes](#attributes-command)
 * Testing
 * [Contributing](#contributing)
 * [License](#license)
@@ -121,10 +123,16 @@ php jiralogger log:sync
 ### Tempo
 [Tempo](https://www.tempo.io/) is a Jira add-on for better time tracking and reports.
 Before using Tempo features, check with your admin whether it is installed on you Jira server or not.
+
 #### Attributes Command
 Use `tempo:attributes` to save custom attributes added by you Jira admin.
 ```bash
 php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}'
+```
+By default, attributes are save under `default` group name.
+While you can provide different attributes with different group names.
+```bash
+php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}' -g mygroup
 ```
 
 ## Contributing
