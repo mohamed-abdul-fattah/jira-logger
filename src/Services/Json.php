@@ -21,12 +21,12 @@ class Json
      * Decode JSON string into an object
      *
      * @param  string $json
+     * @param  bool   $toArray
      * @return mixed
-     * @throws JsonException
      */
-    public static function decode(string $json)
+    public static function decode(string $json, $toArray = false)
     {
-        $res = json_decode($json, false, self::JSON_DEPTH);
+        $res = json_decode($json, $toArray, self::JSON_DEPTH);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new JsonException(

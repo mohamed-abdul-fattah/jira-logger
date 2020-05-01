@@ -20,6 +20,7 @@
     * [Sync](#sync-command)
     * [Tempo](#tempo)
         * [Attributes](#attributes-command)
+        * [List](#attributes-list-command)
 * Testing
 * [Contributing](#contributing)
 * [License](#license)
@@ -133,6 +134,12 @@ By default, attributes are saved under `default` group name.
 While you can provide different attributes with different group names.
 ```bash
 php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}' -g mygroup
+```
+
+#### Attributes List Command
+Use `tempo:list` to list the saved attributes by [`tempo:attributes`](#attributes-command)
+```bash
+php jiralogger tempo:list
 ```
 
 ## Contributing

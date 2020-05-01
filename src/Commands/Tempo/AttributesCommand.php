@@ -42,7 +42,7 @@ class AttributesCommand extends Command
     protected function configure()
     {
         $this->setName('tempo:attributes')
-             ->setDescription('Add attributes to worklog request payload, to be sent with tempo:sync')
+             ->setDescription('Adds attributes to worklog request payload, to be sent with tempo:sync')
              ->addUsage('\'{"_Role_":{"name":"Role","value":"Developer"}}\'')
              ->addArgument(
                  'attributes',

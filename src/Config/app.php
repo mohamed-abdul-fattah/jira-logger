@@ -8,6 +8,7 @@ return [
         App\Commands\AbortCommand::class,
         App\Commands\Tempo\AttributesCommand::class,
         App\Commands\ConnectCommand::class,
+        App\Commands\Tempo\ListCommand::class,
         App\Commands\SetupCommand::class,
         App\Commands\StartCommand::class,
         App\Commands\StatusCommand::class,

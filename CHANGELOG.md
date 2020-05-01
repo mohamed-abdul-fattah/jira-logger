@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Dependency injector
 - `tempo:attributes` command to save extra attributes for logging
+- `tempo:list` command to list saved tempo attributes
 
 ## [0.2.2] - 2020-03-11
 ### Fixed
@@ -15,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.1] - 2020-03-09
 ### Fixed
-- Error on composer create-project because of overcommit with no git repo
+- Error on the composer create-project because of overcommit with no git repo
 
 ## [0.2.0] - 2020-03-08
 ### Added

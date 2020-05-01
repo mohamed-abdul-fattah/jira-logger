@@ -13,7 +13,6 @@ use App\Exceptions\DbException;
  * Class DB
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  v1.0.0
  */
 class DB
 {
@@ -94,7 +93,7 @@ class DB
      * @param  array $args
      * @return bool
      */
-    public function query(string $statement, array $args = [])
+    protected function query(string $statement, array $args = [])
     {
         return $this->db
                     ->prepare($statement)
@@ -109,7 +108,7 @@ class DB
      * @param  string $class
      * @return stdClass|mixed
      */
-    public function fetch(string $statement, array $args = [], $class = stdClass::class)
+    protected function fetch(string $statement, array $args = [], $class = stdClass::class)
     {
         $sth = $this->db->prepare($statement);
         $sth->execute($args);
@@ -125,7 +124,7 @@ class DB
      * @param  string $class
      * @return array
      */
-    public function fetchAll(string $statement, array $args = [], $class = stdClass::class)
+    protected function fetchAll(string $statement, array $args = [], $class = stdClass::class)
     {
         $sth = $this->db->prepare($statement);
         $sth->execute($args);
@@ -306,11 +305,18 @@ class DB
     {
         if (! empty($conditions)) {
             foreach ($conditions as $col => $value) {
-                if (is_null($value)) {
+                if (is_array($value)) {
+                    // ['LIKE', '%pattern%']
+                    $pattern  = $this->db->quote(array_pop($value));
+                    $operator = array_pop($value);
+                    $sth     .= " AND `{$col}` {$operator} {$pattern}";
+                    unset($conditions[$col]);
+                    continue;
+                } elseif (is_null($value) || 'NULL' === strtoupper($value)) {
                     $sth .= " AND `{$col}` IS NULL";
                     unset($conditions[$col]);
                     continue;
-                } elseif ($value === 'NOT NULL') {
+                } elseif (strtoupper($value) === 'NOT NULL') {
                     $sth .= " AND `{$col}` IS NOT NULL";
                     unset($conditions[$col]);
                     continue;
