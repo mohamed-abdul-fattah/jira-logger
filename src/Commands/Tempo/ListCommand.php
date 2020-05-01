@@ -48,16 +48,21 @@ class ListCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $attributes = $this->repository->listAttributes();
-
         $table      = new Table($output);
-        $table->setHeaders(['Group', 'Attributes']);
-        $table->setHeaderTitle('Tempo Saved Attributes');
-        foreach ($attributes as $attribute) {
-            $table->addRow([
-                $attribute->getGroup(),
-                Json::encode($attribute->getAttributes()),
-            ]);
+
+        if (empty($attributes)) {
+            $table->addRow(['<comment>No attributes found!</comment>']);
+        } else {
+            $table->setHeaders(['Group', 'Attributes']);
+            $table->setHeaderTitle('Tempo Saved Attributes');
+            foreach ($attributes as $attribute) {
+                $table->addRow([
+                    $attribute->getGroup(),
+                    Json::encode($attribute->getAttributes()),
+                ]);
+            }
         }
+
         $table->render();
 
         return self::EXIT_SUCCESS;

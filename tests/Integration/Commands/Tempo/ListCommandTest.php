@@ -50,4 +50,17 @@ class ListCommandTest extends IntegrationTestCase
             $this->command->getDisplay()
         );
     }
+
+    /**
+     * @test
+     */
+    public function itHandlesEmptyList()
+    {
+        $this->command->execute([]);
+
+        $this->assertStringContainsString(
+            'No attributes found!',
+            $this->command->getDisplay()
+        );
+    }
 }
