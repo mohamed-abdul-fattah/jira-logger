@@ -32,11 +32,11 @@ class AttributesCommandTest extends IntegrationTestCase
      */
     public function itSavesDefaultAttributes()
     {
-        $this->command->execute(['attributes' => '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}']);
+        $this->command->execute(['attributes' => '{"_Role_":{"name":"Role","value":"Developer"}}']);
 
         $this->assertDatabaseHas('settings', [
             'key'   => 'tempo:attributes:default',
-            'value' => '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}',
+            'value' => '{"_Role_":{"name":"Role","value":"Developer"}}',
         ]);
     }
 
@@ -46,13 +46,13 @@ class AttributesCommandTest extends IntegrationTestCase
     public function itSavesAttributesUnderGroupName()
     {
         $this->command->execute([
-            'attributes' => '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}',
+            'attributes' => '{"_Role_":{"name":"Role","value":"Developer"}}',
             '-g'         => 'my_group',
         ]);
 
         $this->assertDatabaseHas('settings', [
             'key'   => 'tempo:attributes:my_group',
-            'value' => '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}',
+            'value' => '{"_Role_":{"name":"Role","value":"Developer"}}',
         ]);
     }
 

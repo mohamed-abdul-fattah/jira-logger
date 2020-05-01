@@ -43,7 +43,7 @@ class AttributesCommand extends Command
     {
         $this->setName('tempo:attributes')
              ->setDescription('Add attributes to worklog request payload, to be sent with tempo:sync')
-             ->addUsage('\'{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}\'')
+             ->addUsage('\'{"_Role_":{"name":"Role","value":"Developer"}}\'')
              ->addArgument(
                  'attributes',
                  InputArgument::REQUIRED,
