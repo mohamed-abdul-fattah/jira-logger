@@ -22,7 +22,8 @@ return [
      */
     'manifesto' => [
         App\Services\Connect\IConnect::class => App\Services\Connect\JiraConnect::class,
-        App\Http\IRequestDispatcher::class   => App\Http\Request::class,
-        App\Http\IResponse::class            => App\Http\Response::class,
+        App\Http\IRequestDispatcher::class => App\Http\Request::class,
+        App\Http\IResponse::class => App\Http\Response::class,
+        App\Repositories\Contracts\ITaskRepository::class => App\Repositories\TaskRepository::class,
     ]
 ];

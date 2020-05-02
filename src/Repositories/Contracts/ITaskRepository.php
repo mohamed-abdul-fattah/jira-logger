@@ -25,12 +25,13 @@ interface ITaskRepository
     /**
      * Update running task with end time
      *
-     * @param  string $end
-     * @param  string $log
+     * @param  string      $end
+     * @param  string      $log
      * @param  string|null $desc
+     * @param  int|null    $groupId
      * @return void
      */
-    public function stopLog($end, $log, $desc = null): void;
+    public function stopLog($end, $log, $desc = null, $groupId = null): void;
 
     /**
      * Delete the current running task log

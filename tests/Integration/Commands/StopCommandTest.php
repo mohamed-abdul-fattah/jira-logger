@@ -2,8 +2,10 @@
 
 namespace Tests\Integration\Commands;
 
+use App\Services\LogTimer;
 use App\Commands\StopCommand;
 use App\Exceptions\RunTimeException;
+use App\Repositories\TaskRepository;
 use Tests\Integration\IntegrationTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -24,7 +26,8 @@ class StopCommandTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->app->add(new StopCommand);
+        $timer         = new LogTimer(new TaskRepository);
+        $this->app->add(new StopCommand($timer));
         $command       = $this->app->find('log:stop');
         $this->command = new CommandTester($command);
     }
@@ -86,6 +89,26 @@ class StopCommandTest extends IntegrationTestCase
             'description' => 'DONE',
             'ended_at'    => date("Y-m-d H:i"),
             'log'         => '1h 0m',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updateTempoGroupOnStrop()
+    {
+        $this->startLog();
+        $this->db->insert('settings', [
+            'id'    => 3,
+            'key'   => 'tempo:attributes:default',
+            'value' => '{}'
+        ]);
+        $this->command->execute(['-g' => 'default']);
+
+        $this->assertDatabaseHas('logs', [
+            'task_id'     => 'TASK-123',
+            'ended_at'    => date("Y-m-d H:i"),
+            'group_id'    => 3,
         ]);
     }
 }

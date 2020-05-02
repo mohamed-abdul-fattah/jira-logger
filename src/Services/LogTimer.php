@@ -82,8 +82,9 @@ class LogTimer
      *
      * @param string|null $end
      * @param string|null $desc
+     * @param string|null $group
      */
-    public function stop($end = null, $desc = null)
+    public function stop($end = null, $desc = null, $group = null)
     {
         // Check whether is there a running log or not
         /** @var Task $task */
@@ -92,10 +93,11 @@ class LogTimer
             throw new RunTimeException('There is no running log! Run `log:start` to start logging timer');
         }
 
-        $end = (! empty($end)) ? date("Y-m-d {$end}") : date('Y-m-d H:i');
-        $log = $task->addLog($end);
+        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroup($group) : null;
+        $end     = (! empty($end)) ? date("Y-m-d {$end}") : date('Y-m-d H:i');
+        $log     = $task->addLog($end);
 
-        $this->taskRepo->stopLog($end, $log, $desc);
+        $this->taskRepo->stopLog($end, $log, $desc, $groupId);
     }
 
     /**

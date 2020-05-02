@@ -39,7 +39,7 @@ class TaskRepositoryTest extends IntegrationTestCase
     /**
      * @test
      */
-    public function itSavesTempoGroup()
+    public function itSavesTempoGroupOnStart()
     {
         $this->repository->startLog(
             'TASK-ID',
@@ -52,6 +52,31 @@ class TaskRepositoryTest extends IntegrationTestCase
             'task_id'     => 'TASK-ID',
             'description' => 'Lorem Ipsum',
             'group_id'    => 1,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function itOverridesTempoGroupOnStop()
+    {
+        $this->repository->startLog(
+            'TASK-ID',
+            '12:00',
+            'Lorem Ipsum',
+            1
+        );
+        $this->repository->stopLog(
+            'TASK-ID',
+            '13:00',
+            'Lorem Ipsum',
+            2
+        );
+
+        $this->assertDatabaseHas('logs', [
+            'task_id'     => 'TASK-ID',
+            'description' => 'Lorem Ipsum',
+            'group_id'    => 2,
         ]);
     }
 }

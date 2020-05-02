@@ -90,6 +90,11 @@ php jiralogger log:start TASK-123
 # Optionally, you can provide log starting time and log description
 php jiralogger log:start TASK-123 -t 13:20 -d "Work in progress"
 ```
+Using tempo add-on for logging with custom attributes (visit [tempo](#tempo) section for more information)
+can be handled with the `group` option. Refer to [tempo attributes](#attributes-command) for more information about custom attributes.
+```bash
+php jiralogger log:start TASK-123 -g groupname
+```
 
 ### Stop Command
 Use `log:stop` command to stop a logging timer for a Jira task.
@@ -99,6 +104,12 @@ php jiralogger log:stop
 
 # Optionally, you can provide end time and override starting description
 php jiralogger log:stop -t 15:30 -d "DONE"
+```
+Using tempo add-on for logging with custom attributes (visit [tempo](#tempo) section for more information)
+can be handled with the `group` option. Refer to [tempo attributes](#attributes-command) for more information about custom attributes.
+```bash
+# Override provided tempo group on log:start
+php jiralogger log:stop -g groupname
 ```
 
 ### Status Command
@@ -123,7 +134,7 @@ php jiralogger log:sync
 
 ### Tempo
 [Tempo](https://www.tempo.io/) is a Jira add-on for better time tracking and reports.
-Before using Tempo features, check with your admin whether it is installed on you Jira server or not.
+Before using Tempo features, check with your admin whether it is installed on your Jira server or not.
 
 #### Attributes Command
 Use `tempo:attributes` to save custom attributes added by your Jira admin.
