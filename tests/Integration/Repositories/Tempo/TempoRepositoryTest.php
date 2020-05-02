@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Repositories\Tempo;
 
+use App\Exceptions\DbException;
 use App\Entities\Tempo\Attribute;
 use App\Repositories\TempoRepository;
 use Tests\Integration\IntegrationTestCase;
@@ -65,6 +66,32 @@ class TempoRepositoryTest extends IntegrationTestCase
     {
         $attributes = $this->repository->listAttributes();
         $this->assertInstanceOf(Attribute::class, array_shift($attributes));
+    }
+
+    /**
+     * @test
+     */
+    public function itGetsGroupId()
+    {
+        $this->db->insert('settings', [
+            'id'    => 20,
+            'key'   => 'tempo:attributes:name',
+            'value' => '{"key":"value"}',
+        ]);
+
+        $id = $this->repository->getGroup('name');
+        $this->assertEquals(20, $id);
+    }
+
+    /**
+     * @test
+     */
+    public function itExpectsExistingGroup()
+    {
+        $this->expectException(DbException::class);
+        $this->expectExceptionMessage('Group is not found!');
+
+        $this->repository->getGroup('not found');
     }
 
     private function insertAttribute($json, $group = 'default')

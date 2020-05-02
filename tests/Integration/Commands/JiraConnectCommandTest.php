@@ -2,7 +2,10 @@
 
 namespace Tests\Integration\Commands;
 
+use App\Entities\Jira;
 use App\Commands\ConnectCommand;
+use App\Repositories\JiraRepository;
+use App\Repositories\TaskRepository;
 use App\Services\Connect\JiraConnect;
 use Tests\Integration\IntegrationTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -24,7 +27,12 @@ class JiraConnectCommandTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->app->add(new ConnectCommand(new JiraConnect));
+        $connect = new JiraConnect(
+            new JiraRepository,
+            new TaskRepository,
+            new Jira
+        );
+        $this->app->add(new ConnectCommand($connect));
         $command       = $this->app->find('connect');
         $this->command = new CommandTester($command);
     }

@@ -2,11 +2,15 @@
 
 namespace Tests\Unit\Services;
 
+use App\Repositories\Contracts\ITaskRepository;
 use stdClass;
 use Tests\TestCase;
+use App\Entities\Jira;
 use App\Entities\Task;
 use App\Http\IResponse;
 use App\Http\IRequestDispatcher;
+use App\Repositories\TaskRepository;
+use App\Repositories\JiraRepository;
 use App\Services\Connect\JiraConnect;
 use App\Exceptions\ConnectionException;
 
@@ -27,7 +31,15 @@ class JiraConnectTest extends TestCase
     {
         parent::setUp();
 
-        $this->connect = new JiraConnect;
+        $jiraRepository = $this->createMock(JiraRepository::class);
+        $jiraRepository->expects($this->any())
+                 ->method('getPlatformUri')
+                 ->willReturn('https://example.com/');
+        $this->connect  = new JiraConnect(
+            $jiraRepository,
+            new TaskRepository,
+            new Jira
+        );
     }
 
     /**

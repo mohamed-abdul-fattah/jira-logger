@@ -80,6 +80,7 @@ class SetupRepository extends Repository
             CREATE TABLE IF NOT EXISTS logs (
                 id INTEGER PRIMARY KEY,
                 task_id VARCHAR(20) NOT NULL,
+                group_id INTEGER NULL,
                 description VARCHAR(255) NULL,
                 started_at TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
                 ended_at TIMESTAMP NULL,

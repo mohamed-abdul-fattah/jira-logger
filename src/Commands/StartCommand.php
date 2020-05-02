@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class StartCommand
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 class StartCommand extends Command
 {
@@ -51,6 +50,11 @@ class StartCommand extends Command
                  'd',
                  InputOption::VALUE_REQUIRED,
                  'Task log description'
+             )->addOption(
+                 'group',
+                 'g',
+                 InputOption::VALUE_OPTIONAL,
+                 'Tempo attributes group'
              );
     }
 
@@ -64,11 +68,12 @@ class StartCommand extends Command
         $taskId    = $input->getArgument('task id');
         $time      = $input->getOption('time');
         $desc      = $input->getOption('description');
+        $group     = $input->getOption('group');
         $validator = new StartValidator($taskId, $time, $desc);
         $validator->validate();
 
         $output->writeln('<comment>Start logging...</comment>');
-        $this->timer->start($taskId, $time, $desc);
+        $this->timer->start($taskId, $time, $desc, $group);
         $output->writeln('<info>Log started successfully</info>');
 
         return self::EXIT_SUCCESS;

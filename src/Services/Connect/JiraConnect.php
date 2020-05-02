@@ -44,12 +44,16 @@ class JiraConnect implements IConnect
 
     /**
      * JiraConnect constructor.
+     *
+     * @param JiraRepository $jiraRepository
+     * @param TaskRepository $tasksRepository
+     * @param Jira           $platform
      */
-    public function __construct()
+    public function __construct(JiraRepository $jiraRepository, TaskRepository $tasksRepository, Jira $platform)
     {
-        $this->jiraRepository  = new JiraRepository;
-        $this->tasksRepository = new TaskRepository;
-        $this->platform        = new Jira;
+        $this->jiraRepository  = $jiraRepository;
+        $this->tasksRepository = $tasksRepository;
+        $this->platform        = $platform;
     }
 
     /**
