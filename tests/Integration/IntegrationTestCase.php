@@ -10,7 +10,6 @@ use Symfony\Component\Console\Application;
  * Class IntegrationTestCase
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 class IntegrationTestCase extends TestCase
 {

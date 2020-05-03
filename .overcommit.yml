@@ -16,13 +16,6 @@ CommitMsg:
     description: 'Check for empty commit message'
     quiet: true
 
-  MessageFormat:
-    enabled: true
-    description: 'Check commit message matches expected pattern'
-    pattern: '(Issue-[0-9].+|Release v\d\.\d\.\d)\n\n(.+)'
-    expected_pattern_message: '<Issue-Id>\n\n<Commit Message Description>'
-    sample_message: 'DEFECT-1234\n\nRefactored Onboarding flow'
-
   RussianNovel:
     enabled: true
     description: 'Check length of commit message'

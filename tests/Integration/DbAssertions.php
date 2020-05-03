@@ -35,6 +35,7 @@ trait DbAssertions
             CREATE TABLE IF NOT EXISTS logs (
                 id INTEGER PRIMARY KEY,
                 task_id VARCHAR(20) NOT NULL,
+                group_id INTEGER NULL,
                 description VARCHAR(255) NULL,
                 started_at TIMESTAMP CURRENT_TIMESTAMP NOT NULL,
                 ended_at TIMESTAMP NULL,
@@ -56,10 +57,8 @@ trait DbAssertions
      */
     public function truncateDb()
     {
-        $this->db->raw("
-            DROP TABLE logs;
-            DROP TABLE settings;
-        ");
+        $this->db->raw("DROP TABLE logs");
+        $this->db->raw('DROP TABLE settings');
         $this->db = null;
     }
 

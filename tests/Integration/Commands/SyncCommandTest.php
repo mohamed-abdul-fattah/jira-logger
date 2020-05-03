@@ -2,7 +2,10 @@
 
 namespace Tests\Integration\Commands;
 
+use App\Entities\Jira;
 use App\Commands\SyncCommand;
+use App\Repositories\JiraRepository;
+use App\Repositories\TaskRepository;
 use App\Services\Connect\JiraConnect;
 use Tests\Integration\IntegrationTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -25,7 +28,12 @@ class SyncCommandTest extends IntegrationTestCase
         parent::setUp();
 
         $this->setPlatformUri();
-        $this->app->add(new SyncCommand(new JiraConnect));
+        $connect = new JiraConnect(
+            new JiraRepository,
+            new TaskRepository,
+            new Jira
+        );
+        $this->app->add(new SyncCommand($connect));
         $command       = $this->app->find('log:sync');
         $this->command = new CommandTester($command);
     }

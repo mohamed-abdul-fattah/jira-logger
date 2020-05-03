@@ -1,51 +1,37 @@
 <?php
 
-namespace App\Commands;
+namespace App\Commands\Tempo;
 
 use App\Entities\Task;
 use App\Services\LogTimer;
-use App\Services\Connect\IConnect;
-use App\Repositories\JiraRepository;
-use App\Repositories\TaskRepository;
+use App\Services\Connect\TempoConnect;
 use Symfony\Component\Console\Helper\Table;
+use App\Commands\SyncCommand as BaseCommand;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SyncCommand
+ * Class Sync
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
  */
-class SyncCommand extends Command
+class SyncCommand extends BaseCommand
 {
     /**
-     * @var IConnect
+     * @var TempoConnect
      */
     protected $connect;
 
     /**
-     * @var TaskRepository
-     */
-    protected $tasksRepo;
-
-    /**
-     * @var JiraRepository
-     */
-    protected $platformRepo;
-
-    /**
      * SyncCommand constructor.
      *
-     * @param IConnect $connect
+     * @param TempoConnect $connect
      */
-    public function __construct(IConnect $connect)
+    public function __construct(TempoConnect $connect)
     {
-        parent::__construct();
-
-        $this->tasksRepo    = new TaskRepository;
-        $this->platformRepo = new JiraRepository;
-        $this->connect      = $connect;
+        parent::__construct($connect);
     }
 
     /**
@@ -53,17 +39,26 @@ class SyncCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('log:sync')
-             ->setDescription('Syncs completed logs with Jira');
+        $this->setName('tempo:sync')
+             ->setDescription('Syncs completed logs with Jira via tempo add-on')
+             ->addOption(
+                 'group',
+                 'g',
+                 InputOption::VALUE_OPTIONAL,
+                 'Use global group for all the un-grouped logs while syncing',
+                 'default'
+             );
     }
 
     /**
      * @param  InputInterface $input
      * @param  OutputInterface $output
-     * @return int|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->connect->validateDefaultGroupExistence();
+
         $this->connect->setDispatcher($this->request);
         $this->request->setSessionId($this->platformRepo->getSession());
         $tasks = $this->tasksRepo->getUnSyncedLogs();
@@ -75,8 +70,12 @@ class SyncCommand extends Command
         }
 
         $this->connect->checkPlatformConnection();
-        $output->writeln('<comment>Syncing...</comment>');
+        $output->writeln([
+            '<comment>Syncing...</comment>',
+            '<comment>Note that Tempo throws 500 error response on invalid attributes!</comment>',
+        ]);
 
+        $group       = $input->getOption('group');
         $table       = new Table($output);
         $progressBar = new ProgressBar($output, count($tasks));
         $info        = [];
@@ -84,15 +83,16 @@ class SyncCommand extends Command
 
         foreach ($tasks as $task) {
             /** @var Task $task */
-            $info[] = $this->connect->syncLog($task);
+            $info[] = $this->connect->syncTempoLog($task, $group);
             $total += $task->logInSeconds();
             $progressBar->advance();
         }
 
-        $table->setHeaders(['Task ID', 'Logged Time', 'Sync Status', 'Failure Reason']);
+        $table->setHeaders(['Task ID', 'Tempo Group', 'Logged Time', 'Sync Status', 'Failure Reason']);
         foreach ($info as $task) {
             $table->addRow([
                 $task['taskId'],
+                $task['group'],
                 $task['logged'],
                 $task['sync'] === Task::SYNC_SUCCEED ? '<info>Succeed</info>' : '<error>Failed!</error>',
                 $task['reason'] ?? '__',
@@ -106,21 +106,5 @@ class SyncCommand extends Command
 
         $this->checkUpdates($output);
         return self::EXIT_SUCCESS;
-    }
-
-    /**
-     * Check whether there is a new version released or not
-     *
-     * @param OutputInterface $output
-     */
-    protected function checkUpdates(OutputInterface $output): void
-    {
-        $output->writeln(PHP_EOL . "<comment>Checking for new releases...</comment>");
-        $release = $this->connect->checkUpdates();
-        if ($release === APP_VERSION) {
-            $output->writeln('<info>All is up to date</info>');
-        } else {
-            $output->writeln("New version has been released <info>{$release}</info>");
-        }
     }
 }

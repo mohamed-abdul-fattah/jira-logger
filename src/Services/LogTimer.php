@@ -4,20 +4,25 @@ namespace App\Services;
 
 use App\Entities\Task;
 use App\Exceptions\RunTimeException;
+use App\Repositories\TempoRepository;
 use App\Repositories\Contracts\ITaskRepository;
 
 /**
  * Class LogTimer
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 class LogTimer
 {
     /**
      * @var ITaskRepository
      */
-    protected $taskRepo;
+    private $taskRepo;
+
+    /**
+     * @var TempoRepository
+     */
+    private $tempoRepo;
 
     /**
      * Convert time in seconds into more human readable
@@ -45,17 +50,19 @@ class LogTimer
      */
     public function __construct(ITaskRepository $repository)
     {
-        $this->taskRepo = $repository;
+        $this->taskRepo  = $repository;
+        $this->tempoRepo = new TempoRepository;
     }
 
     /**
      * Start logging task timer
      *
-     * @param string$taskId
+     * @param string      $taskId
      * @param string|null $time
      * @param string|null $desc
+     * @param string|null $group Tempo group name
      */
-    public function start($taskId, $time = null, $desc = null)
+    public function start($taskId, $time = null, $desc = null, $group = null)
     {
         // Check whether is there a running log or not
         $task = $this->taskRepo->getRunningTask();
@@ -63,10 +70,11 @@ class LogTimer
             throw new RunTimeException('There is a running log already! Run `log:abort` or `log:stop`, then try again');
         }
 
-        $time = (empty($time)) ? date('Y-m-d H:i') : date("Y-m-d {$time}");
-        $desc = (empty($desc)) ? "Working on {$taskId} issue" : $desc;
+        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroupId($group) : null;
+        $time    = (empty($time)) ? date('Y-m-d H:i') : date("Y-m-d {$time}");
+        $desc    = (empty($desc)) ? "Working on {$taskId} issue" : $desc;
 
-        $this->taskRepo->startLog($taskId, $time, $desc);
+        $this->taskRepo->startLog($taskId, $time, $desc, $groupId);
     }
 
     /**
@@ -74,8 +82,9 @@ class LogTimer
      *
      * @param string|null $end
      * @param string|null $desc
+     * @param string|null $group
      */
-    public function stop($end = null, $desc = null)
+    public function stop($end = null, $desc = null, $group = null)
     {
         // Check whether is there a running log or not
         /** @var Task $task */
@@ -84,10 +93,11 @@ class LogTimer
             throw new RunTimeException('There is no running log! Run `log:start` to start logging timer');
         }
 
-        $end = (! empty($end)) ? date("Y-m-d {$end}") : date('Y-m-d H:i');
-        $log = $task->addLog($end);
+        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroupId($group) : null;
+        $end     = (! empty($end)) ? date("Y-m-d {$end}") : date('Y-m-d H:i');
+        $log     = $task->addLog($end);
 
-        $this->taskRepo->stopLog($end, $log, $desc);
+        $this->taskRepo->stopLog($end, $log, $desc, $groupId);
     }
 
     /**

@@ -26,6 +26,11 @@ class Task extends Entity
     protected $taskId;
 
     /**
+     * @var int
+     */
+    protected $groupId;
+
+    /**
      * @var string
      */
     protected $description;
@@ -71,6 +76,24 @@ class Task extends Entity
     }
 
     /**
+     * Set task tempo group ID
+     *
+     * @param int|null $groupId
+     */
+    public function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
      * Set task started at log time
      *
      * @param string|DateTime $date
@@ -94,6 +117,14 @@ class Task extends Entity
     public function setEndedAt($date)
     {
         $this->endedAt = $date;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndedAt()
+    {
+        return $this->endedAt;
     }
 
     /**

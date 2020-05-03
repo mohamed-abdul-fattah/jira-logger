@@ -8,7 +8,6 @@ use App\Exceptions\RunTimeException;
  * Class StartValidator
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 class StartValidator
 {
@@ -49,14 +48,13 @@ class StartValidator
     public function validate()
     {
         $this->validateTaskId();
-
         $this->validateTime();
-
         $this->validateDescription();
     }
 
     /**
      * @return void
+     * @throws RunTimeException
      */
     private function validateTaskId()
     {
@@ -69,6 +67,7 @@ class StartValidator
 
     /**
      * @return void
+     * @throws RunTimeException
      */
     private function validateTime()
     {
@@ -83,6 +82,7 @@ class StartValidator
 
     /**
      * @return void
+     * @throws RunTimeException
      */
     private function validateDescription()
     {

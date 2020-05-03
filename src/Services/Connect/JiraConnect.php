@@ -17,7 +17,6 @@ use App\Exceptions\ConnectionException;
  * Class JiraConnect
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 class JiraConnect implements IConnect
 {
@@ -35,21 +34,25 @@ class JiraConnect implements IConnect
     /**
      * @var JiraRepository
      */
-    private $jiraRepository;
+    protected $jiraRepository;
 
     /**
      * @var TaskRepository
      */
-    private $tasksRepository;
+    protected $tasksRepository;
 
     /**
      * JiraConnect constructor.
+     *
+     * @param JiraRepository $jiraRepository
+     * @param TaskRepository $tasksRepository
+     * @param Jira           $platform
      */
-    public function __construct()
+    public function __construct(JiraRepository $jiraRepository, TaskRepository $tasksRepository, Jira $platform)
     {
-        $this->jiraRepository  = new JiraRepository;
-        $this->tasksRepository = new TaskRepository;
-        $this->platform        = new Jira;
+        $this->jiraRepository  = $jiraRepository;
+        $this->tasksRepository = $tasksRepository;
+        $this->platform        = $platform;
     }
 
     /**
@@ -95,18 +98,9 @@ class JiraConnect implements IConnect
             );
             $info = $res->body();
             $this->jiraRepository->saveSession($info->session->value);
+            $this->jiraRepository->saveUsername($username);
         } catch (Exception $e) {
             throw new ConnectionException($e->getMessage());
-        }
-    }
-
-    /**
-     * @throws ConnectionException
-     */
-    private function validateDispatcherExistence(): void
-    {
-        if (! $this->dispatcher) {
-            throw new ConnectionException('Dispatcher not found!', Command::EXIT_FAILURE);
         }
     }
 
@@ -121,11 +115,8 @@ class JiraConnect implements IConnect
         $this->validateDispatcherExistence();
         try {
             $this->dispatcher->postJson(
-                $this->platform->getWorkLogUri($task->getTaskId()),
-                [
-                    'comment'          => $task->getDescription(),
-                    'timeSpentSeconds' => $task->logInSeconds(),
-                ]
+                $this->getWorkLogUri($task),
+                $this->getPayload($task)
             );
 
             $this->tasksRepository->updateTask(
@@ -144,7 +135,6 @@ class JiraConnect implements IConnect
             $sync   = Task::SYNC_FAILED;
             $reason = $this->getSyncLogMsg($e->getCode());
         }
-
 
         return [
             'taskId' => $task->getTaskId(),
@@ -190,7 +180,6 @@ class JiraConnect implements IConnect
     {
         // Unset base URI to request an external URI
         $this->dispatcher->setBaseUri(null);
-        /** @var IResponse $response */
         $response = $this->dispatcher->getJson(
             self::TAGS_URL,
             [],
@@ -210,7 +199,7 @@ class JiraConnect implements IConnect
      * @param  int $errorCode
      * @return string
      */
-    private function getSyncLogMsg(int $errorCode): string
+    protected function getSyncLogMsg(int $errorCode): string
     {
         if ($errorCode === IResponse::HTTP_NOT_FOUND) {
             return 'Issue Does Not Exist';
@@ -219,5 +208,38 @@ class JiraConnect implements IConnect
         } else {
             return 'Cannot add worklog to this issue';
         }
+    }
+
+    /**
+     * @throws ConnectionException
+     */
+    protected function validateDispatcherExistence(): void
+    {
+        if (! $this->dispatcher) {
+            throw new ConnectionException('Dispatcher not found!', Command::EXIT_FAILURE);
+        }
+    }
+
+    /**
+     * Get worklog request payload
+     *
+     * @param  Task $task
+     * @return array
+     */
+    protected function getPayload(Task $task): array
+    {
+        return [
+            'comment'          => $task->getDescription(),
+            'timeSpentSeconds' => $task->logInSeconds(),
+        ];
+    }
+
+    /**
+     * @param  Task $task
+     * @return string
+     */
+    protected function getWorkLogUri(Task $task): string
+    {
+        return $this->platform->getWorkLogUri($task->getTaskId());
     }
 }

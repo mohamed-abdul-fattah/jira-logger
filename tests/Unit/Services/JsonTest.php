@@ -50,4 +50,14 @@ class JsonTest extends TestCase
 
         $this->assertObjectHasAttribute('username', $obj);
     }
+
+    /**
+     * @test
+     */
+    public function itDecodesToArray()
+    {
+        $json = '{"key": "value"}';
+
+        $this->assertEquals(['key' => 'value'], Json::decode($json, true));
+    }
 }

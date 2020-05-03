@@ -5,19 +5,7 @@
  * Jira Logger CLI Tool
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
-
-use App\Commands\StopCommand;
-use App\Commands\SyncCommand;
-use App\Commands\SetupCommand;
-use App\Commands\AbortCommand;
-use App\Commands\StartCommand;
-use App\Commands\StatusCommand;
-use App\Commands\ConnectCommand;
-use App\Commands\TimezoneCommand;
-use App\Services\Connect\JiraConnect;
-use Symfony\Component\Console\Application;
 
 require __DIR__ . '/vendor/autoload.php';
 /**
@@ -41,15 +29,5 @@ $appName = <<< EOL
                                 |___/ |___/  
 EOL;
 
-$app = new Application($appName, APP_VERSION);
-
-$app->add(new SetupCommand);
-$app->add(new ConnectCommand(new JiraConnect));
-$app->add(new StartCommand);
-$app->add(new StopCommand);
-$app->add(new AbortCommand);
-$app->add(new StatusCommand);
-$app->add(new SyncCommand(new JiraConnect));
-$app->add(new TimezoneCommand);
-
-$app->run();
+$launcher = new \App\Launcher($appName, APP_VERSION);
+$launcher->run();

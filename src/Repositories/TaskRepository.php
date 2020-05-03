@@ -18,18 +18,20 @@ class TaskRepository extends Repository implements ITaskRepository
     /**
      * Start logging time
      *
-     * @param  string $taskId
-     * @param  string $time
-     * @param  string $desc
+     * @param  string   $taskId
+     * @param  string   $time
+     * @param  string   $desc
+     * @param  int|null $groupId Tempo group ID
      * @return void
      */
-    public function startLog($taskId, $time, $desc): void
+    public function startLog($taskId, $time, $desc, $groupId = null): void
     {
         $this->db->beginTransaction();
 
         try {
             $this->db->insert('logs', [
                 'task_id'     => $taskId,
+                'group_id'    => $groupId,
                 'started_at'  => $time,
                 'description' => $desc,
             ]);
@@ -41,17 +43,22 @@ class TaskRepository extends Repository implements ITaskRepository
     }
 
     /**
-     * @param  string $end
-     * @param  string $log
+     * @param  string      $end
+     * @param  string      $log
      * @param  string|null $desc
+     * @param  int|null    $groupId
      * @return void
      */
-    public function stopLog($end, $log, $desc = null): void
+    public function stopLog($end, $log, $desc = null, $groupId = null): void
     {
         $this->db->beginTransaction();
 
         $args = (! empty($desc)) ? ['description' => $desc] : [];
         $args = array_merge($args, ['ended_at' => $end, 'log' => $log]);
+
+        if (! empty($groupId)) {
+            $args['group_id'] = $groupId;
+        }
 
         try {
             $this->db->update('logs', $args, ['ended_at' => null]);

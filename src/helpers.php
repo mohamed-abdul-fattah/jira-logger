@@ -50,3 +50,14 @@ function isTestingEnv(): bool
 {
     return env('ENV') === 'testing';
 }
+
+/**
+ * Die and dump
+ *
+ * @param mixed $dump
+ */
+function dd($dump)
+{
+    var_dump($dump);
+    die;
+}

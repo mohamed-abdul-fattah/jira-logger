@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class ConnectCommand
  *
  * @author Mohamed Abdul-Fattah <csmohamed8@gmail.com>
- * @since  0.1.0
  */
 class ConnectCommand extends Command
 {
@@ -90,6 +89,7 @@ class ConnectCommand extends Command
              ->setDispatcher($this->request)
              ->connect($username, $password);
         $output->writeln('<info>Connected successfully</info>');
+
         return self::EXIT_SUCCESS;
     }
 }
