@@ -11,6 +11,6 @@
     </testsuites>
     <php>
         <env name="ENV" value="testing" />
-        <const name="APP_VERSION" value="0.3.1" />
+        <const name="APP_VERSION" value="0.4.0" />
     </php>
 </phpunit>

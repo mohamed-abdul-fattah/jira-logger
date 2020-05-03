@@ -1,10 +1,10 @@
-![Overview](jiralogger.png)
-# Jira Logger
->A command line tool to automate Jira logging
+<p align="center">
+    <img src="/jiralogger.png">
+    <img alt ="Stable" src="https://img.shields.io/badge/stable-0.4.0-blue.svg">
+    <img alt="PHP" src="https://img.shields.io/badge/php-^7.2-green">
+    <img alt="License" src="https://img.shields.io/badge/license-MIT-yellowgreen.svg">
+</p>
 
-![Release](https://img.shields.io/badge/release-0.3.1-blue.svg)
-![PHP](https://img.shields.io/badge/php-^7.2-green)
-![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)
 ## Table of Content
 * [Installation](#installation)
     * [Regular](#regular)
