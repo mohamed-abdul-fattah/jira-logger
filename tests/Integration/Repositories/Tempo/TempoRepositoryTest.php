@@ -79,7 +79,7 @@ class TempoRepositoryTest extends IntegrationTestCase
             'value' => '{"key":"value"}',
         ]);
 
-        $id = $this->repository->getGroup('name');
+        $id = $this->repository->getGroupId('name');
         $this->assertEquals(20, $id);
     }
 
@@ -91,7 +91,7 @@ class TempoRepositoryTest extends IntegrationTestCase
         $this->expectException(DbException::class);
         $this->expectExceptionMessage('Group is not found!');
 
-        $this->repository->getGroup('not found');
+        $this->repository->getGroupId('not found');
     }
 
     private function insertAttribute($json, $group = 'default')

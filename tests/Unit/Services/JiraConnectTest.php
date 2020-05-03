@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services;
 
-use App\Repositories\Contracts\ITaskRepository;
 use stdClass;
 use Tests\TestCase;
 use App\Entities\Jira;
@@ -13,6 +12,7 @@ use App\Repositories\TaskRepository;
 use App\Repositories\JiraRepository;
 use App\Services\Connect\JiraConnect;
 use App\Exceptions\ConnectionException;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Class ConnectTest
@@ -27,19 +27,20 @@ class JiraConnectTest extends TestCase
      */
     private $connect;
 
+    /**
+     * @var MockObject
+     */
+    private $jiraRepository;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $jiraRepository = $this->createMock(JiraRepository::class);
-        $jiraRepository->expects($this->any())
-                 ->method('getPlatformUri')
-                 ->willReturn('https://example.com/');
-        $this->connect  = new JiraConnect(
-            $jiraRepository,
-            new TaskRepository,
-            new Jira
-        );
+        $this->jiraRepository = $this->createMock(JiraRepository::class);
+        $this->jiraRepository->expects($this->any())
+                             ->method('getPlatformUri')
+                             ->willReturn('https://example.com/');
+        $this->connect  = new JiraConnect($this->jiraRepository, new TaskRepository, new Jira);
     }
 
     /**
@@ -96,6 +97,8 @@ class JiraConnectTest extends TestCase
         $dispatcher->expects($this->once())
                    ->method('setBaseUri')
                    ->willReturnSelf();
+        $this->jiraRepository->expects($this->once())
+                             ->method('saveUsername');
 
         /** @var IRequestDispatcher $dispatcher */
         $this->connect->setDispatcher($dispatcher);

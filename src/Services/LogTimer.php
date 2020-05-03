@@ -70,7 +70,7 @@ class LogTimer
             throw new RunTimeException('There is a running log already! Run `log:abort` or `log:stop`, then try again');
         }
 
-        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroup($group) : null;
+        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroupId($group) : null;
         $time    = (empty($time)) ? date('Y-m-d H:i') : date("Y-m-d {$time}");
         $desc    = (empty($desc)) ? "Working on {$taskId} issue" : $desc;
 
@@ -93,7 +93,7 @@ class LogTimer
             throw new RunTimeException('There is no running log! Run `log:start` to start logging timer');
         }
 
-        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroup($group) : null;
+        $groupId = (! is_null($group)) ? $this->tempoRepo->getGroupId($group) : null;
         $end     = (! empty($end)) ? date("Y-m-d {$end}") : date('Y-m-d H:i');
         $log     = $task->addLog($end);
 

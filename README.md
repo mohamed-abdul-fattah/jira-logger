@@ -21,6 +21,7 @@
     * [Tempo](#tempo)
         * [Attributes](#attributes-command)
         * [List](#attributes-list-command)
+        * [Sync](#tempo-sync-command)
 * Testing
 * [Contributing](#contributing)
 * [License](#license)
@@ -151,6 +152,17 @@ php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":
 Use `tempo:list` to list the saved attributes by [`tempo:attributes`](#attributes-command)
 ```bash
 php jiralogger tempo:list
+```
+
+#### Tempo Sync Command
+Use `tempo:sync` to sync the logs to Jira using Tempo attributes.
+Default attributes group is used for un-grouped logs, while grouped logs (logs logged with `group` option)
+will use its group.
+```bash
+# By default the tempo group is "default"
+php jiralogger tempo:sync
+# You can override tempo group using group option
+php jiralogger tempo:list -g groupname
 ```
 
 ## Contributing

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tempo:list` command to list saved tempo attributes
 - Save tempo group on log start
 - Save tempo group on log stop
+- `tempo:sync` to sync logs to Jira via Tempo
 
 ## [0.2.2] - 2020-03-11
 ### Fixed

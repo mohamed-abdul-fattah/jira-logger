@@ -14,6 +14,7 @@ return [
         App\Commands\StatusCommand::class,
         App\Commands\StopCommand::class,
         App\Commands\SyncCommand::class,
+        App\Commands\Tempo\SyncCommand::class,
         App\Commands\TimezoneCommand::class,
     ],
 

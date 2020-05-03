@@ -13,6 +13,12 @@ use App\Exceptions\DbException;
 class TempoRepository extends Repository
 {
     /**
+     * Tempo worklog URI
+     * @link https://www.tempo.io/server-api-documentation/timesheets#operation/createWorklog_1
+     */
+    const WORKLOG_URI = '/rest/tempo-timesheets/4/worklogs';
+
+    /**
      * Save Tempo attributes into database
      *
      * @param string $attributes
@@ -40,8 +46,9 @@ class TempoRepository extends Repository
      *
      * @param  string $group
      * @return int
+     * @throws DbException
      */
-    public function getGroup(string $group)
+    public function getGroupId(string $group)
     {
         /** @var Attribute $attribute */
         $attribute = $this->db->first('settings', [
@@ -53,5 +60,33 @@ class TempoRepository extends Repository
         }
 
         return $attribute->getId();
+    }
+
+    /**
+     * Get attributes decoded for the given group ID
+     *
+     * @param  int $groupId
+     * @return array
+     */
+    public function getAttributesById(int $groupId)
+    {
+        /** @var Attribute $attribute */
+        $attribute = $this->db->first('settings', ['id' => $groupId], Attribute::class);
+
+        return $attribute->getAttributes();
+    }
+
+    /**
+     * Get group name by ID
+     *
+     * @param  int $groupId
+     * @return string
+     */
+    public function findGroupById(int $groupId)
+    {
+        /** @var Attribute $attribute */
+        $attribute = $this->db->first('settings', ['id' => $groupId], Attribute::class);
+
+        return $attribute->getGroup();
     }
 }

@@ -21,6 +21,26 @@ abstract class PlatformRepository extends Repository
     }
 
     /**
+     * Saves user's username login
+     *
+     * @param string $username
+     */
+    public function saveUsername(string $username)
+    {
+        $this->db->saveSetting('username', $username);
+    }
+
+    /**
+     * Get user's username login
+     *
+     * @return string|null
+     */
+    public function getUsername()
+    {
+        return $this->db->getSetting('username');
+    }
+
+    /**
      * Save authentication session into database
      *
      * @param string $sessionId
