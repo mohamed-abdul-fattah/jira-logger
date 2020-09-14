@@ -48,4 +48,9 @@ class TestRequest implements IRequestDispatcher
 
         return new Response($response);
     }
+
+    public function setBasicAuth(string $base64): void
+    {
+        //
+    }
 }

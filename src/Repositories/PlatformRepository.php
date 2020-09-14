@@ -53,4 +53,19 @@ abstract class PlatformRepository extends Repository
      * @return string|null
      */
     abstract public function getSession();
+
+    /**
+     * Generate base64 combination of username and secret to be used for basic authentication
+     *
+     * @param string $username
+     * @param string $secret
+     */
+    abstract public function saveBasicAuth(string $username, string $secret): void;
+
+    /**
+     * Get basic authentication combination
+     *
+     * @return string|null
+     */
+    abstract public function getBasicAuth();
 }

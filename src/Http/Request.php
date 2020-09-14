@@ -39,6 +39,11 @@ class Request implements IRequestDispatcher
     private $sessionId;
 
     /**
+     * @var string|null
+     */
+    private $basic_auth;
+
+    /**
      * Request constructor.
      */
     public function __construct()
@@ -70,6 +75,24 @@ class Request implements IRequestDispatcher
     public function setSessionId($sessionId): void
     {
         $this->sessionId = $sessionId;
+    }
+
+    /**
+     * Set base64 combination for basic authentication authorization header
+     *
+     * @param string $base64
+     */
+    public function setBasicAuth(string $base64): void
+    {
+        $this->basic_auth = $base64;
+    }
+
+    /**
+     * Revoke already set authentication
+     */
+    public function revokeAuthentication(): void
+    {
+        $this->basic_auth = null;
     }
 
     /**
@@ -126,6 +149,10 @@ class Request implements IRequestDispatcher
         if (! empty($this->sessionId) && ! empty($this->baseUri)) {
             $jar = new CookieJar;
             $jar = $jar->fromArray(['JSESSIONID' => $this->sessionId], $this->domain());
+        }
+
+        if (! empty($this->basic_auth)) {
+            $headers['Authorization'] = 'Basic ' . $this->basic_auth;
         }
 
         try {

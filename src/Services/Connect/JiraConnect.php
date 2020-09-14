@@ -196,6 +196,23 @@ class JiraConnect implements IConnect
     }
 
     /**
+     * Save encoded base64 for basic authentication
+     *
+     * @param string $username
+     * @param string $apiToken
+     * @see https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
+     */
+    public function saveBasicAuth(string $username, string $apiToken): void
+    {
+        try {
+            $this->jiraRepository->saveUsername($username);
+            $this->jiraRepository->saveBasicAuth($username, $apiToken);
+        } catch (Exception $e) {
+            throw new ConnectionException($e->getMessage());
+        }
+    }
+
+    /**
      * @param  int $errorCode
      * @return string
      */

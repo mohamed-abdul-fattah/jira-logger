@@ -53,4 +53,12 @@ interface IConnect
      * @return string
      */
     public function checkUpdates(): string;
+
+    /**
+     * Save encoded base64 for basic authentication
+     *
+     * @param string $username
+     * @param string $apiToken
+     */
+    public function saveBasicAuth(string $username, string $apiToken): void;
 }

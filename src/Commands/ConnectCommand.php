@@ -51,6 +51,18 @@ class ConnectCommand extends Command
                  'p',
                  InputOption::VALUE_OPTIONAL,
                  'Jira password'
+             )
+             ->addOption(
+                 'use-cookies',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'Use cookies based authentication with Jira password (deprecated)'
+             )
+             ->addOption(
+                 'api-token',
+                 null,
+                 InputOption::VALUE_OPTIONAL,
+                 'Jira API token for authentication'
              );
     }
 
@@ -61,8 +73,9 @@ class ConnectCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $helper    = $this->getHelper('question');
-        $validator = new ConnectValidator;
+        $helper     = $this->getHelper('question');
+        $validator  = new ConnectValidator;
+        $useCookies = $input->getOption('use-cookies');
 
         $username = $input->getOption('username');
         if (empty($username)) {
@@ -73,22 +86,39 @@ class ConnectCommand extends Command
             $username = $helper->ask($input, $output, $question);
         }
 
-        $password = $input->getOption('password');
-        if (empty($password)) {
-            $question = new Question('Password: ');
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $question->setValidator(function ($password) use ($validator) {
-                return $validator->validatePassword($password);
-            });
-            $password = $helper->ask($input, $output, $question);
-        }
+        if ($useCookies) {
+            $password = $input->getOption('password');
+            if (empty($password)) {
+                $question = new Question('Password: ');
+                $question->setHidden(true);
+                $question->setHiddenFallback(false);
+                $question->setValidator(function ($password) use ($validator) {
+                    return $validator->validatePassword($password);
+                });
+                $password = $helper->ask($input, $output, $question);
+            }
 
-        $output->writeln('<comment>Connecting...</comment>');
-        $this->connectService
-             ->setDispatcher($this->request)
-             ->connect($username, $password);
-        $output->writeln('<info>Connected successfully</info>');
+            $output->writeln('<comment>Connecting...</comment>');
+            $this->connectService
+                 ->setDispatcher($this->request)
+                 ->connect($username, $password);
+            $output->writeln('<info>Connected successfully</info>');
+        } else {
+            $apiToken = $input->getOption('api-token');
+            if (empty($apiToken)) {
+                $question = new Question('Jira API token (https://id.atlassian.com/manage-profile/security/api-tokens): ');
+                $question->setHidden(true);
+                $question->setHiddenFallback(false);
+                $question->setValidator(function ($password) use ($validator) {
+                    return $validator->validatePassword($password);
+                });
+                $apiToken = $helper->ask($input, $output, $question);
+            }
+
+            $output->writeln('<comment>Processing API token...</comment>');
+            $this->connectService->saveBasicAuth($username, $apiToken);
+            $output->writeln('<info>Processed successfully</info>');
+        }
 
         return self::EXIT_SUCCESS;
     }
