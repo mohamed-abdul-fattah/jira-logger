@@ -53,4 +53,9 @@ class TestRequest implements IRequestDispatcher
     {
         //
     }
+
+    public function revokeAuthentication()
+    {
+        //
+    }
 }

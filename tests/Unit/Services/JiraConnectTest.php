@@ -89,7 +89,7 @@ class JiraConnectTest extends TestCase
                      return $obj;
                  }));
         $dispatcher = $this->getMockBuilder(IRequestDispatcher::class)
-                           ->onlyMethods(['setBaseUri', 'postJson', 'getJson', 'setSessionId'])
+                           ->onlyMethods(['setBaseUri', 'postJson', 'getJson', 'setSessionId', 'setBasicAuth'])
                            ->getMock();
         $dispatcher->expects($this->once())
                    ->method('postJson')
