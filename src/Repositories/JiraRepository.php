@@ -29,4 +29,25 @@ class JiraRepository extends PlatformRepository
     {
         return $this->db->getSetting('session_id');
     }
+
+    /**
+     * Generate base64 combination of email and API token to be used for basic authentication
+     *
+     * @param string $username
+     * @param string $secret
+     */
+    public function saveBasicAuth(string $username, string $secret): void
+    {
+        $this->db->saveSetting('basic_auth', base64_encode($username . ':' . $secret));
+    }
+
+    /**
+     * Get basic authentication combination
+     *
+     * @return string
+     */
+    public function getBasicAuth()
+    {
+        return $this->db->getSetting('basic_auth');
+    }
 }

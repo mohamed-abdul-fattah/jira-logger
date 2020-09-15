@@ -1,6 +1,6 @@
 <p align="center">
     <img src="/jiralogger.png">
-    <img alt ="Stable" src="https://img.shields.io/badge/stable-0.4.0-blue.svg">
+    <img alt ="Stable" src="https://img.shields.io/badge/stable-0.5.0-blue.svg">
     <img alt="PHP" src="https://img.shields.io/badge/php-^7.2-green">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-yellowgreen.svg">
 </p>
@@ -73,13 +73,24 @@ php jiralogger config:timezone
 
 ### Connect Command
 `connect` command is your way for authentication with your Jira server. 
-Authentication is needed for logs syncing process.
+Logs syncing process needs authentication.
+
+There are 2 ways for authentication with Jira servers
+1. Cookies based authentication (older [deprecated](https://confluence.atlassian.com/cloud/deprecation-of-basic-authentication-with-passwords-for-jira-and-confluence-apis-972355348.html) mechanism)
 ```bash
 # This way, connect command will ask for your Jira username and password
-php jiralogger connect
+php jiralogger connect --use-cookies
 
 # You can provide username via command options
-php jiralogger connect -u john.doe
+php jiralogger connect -u john.doe --use-cookies
+```
+2. Basic authentication using API tokens. Get your Jira API token from [here](https://id.atlassian.com/manage-profile/security/api-tokens).
+```bash
+# This way, connect will ask for you Jira username (email) and API token
+php jiralogger connect
+
+# You can provide username via command options alongside with the API token
+php jiralogger connect -u john.doe@jira.com --api-token token
 ```
 
 ### Start Command

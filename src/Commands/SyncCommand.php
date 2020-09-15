@@ -66,6 +66,7 @@ class SyncCommand extends Command
     {
         $this->connect->setDispatcher($this->request);
         $this->request->setSessionId($this->platformRepo->getSession());
+        $this->request->setBasicAuth($this->platformRepo->getBasicAuth() ?? '');
         $tasks = $this->tasksRepo->getUnSyncedLogs();
 
         if (empty($tasks)) {
@@ -116,6 +117,7 @@ class SyncCommand extends Command
     protected function checkUpdates(OutputInterface $output): void
     {
         $output->writeln(PHP_EOL . "<comment>Checking for new releases...</comment>");
+        $this->request->revokeAuthentication();
         $release = $this->connect->checkUpdates();
         if ($release === APP_VERSION) {
             $output->writeln('<info>All is up to date</info>');

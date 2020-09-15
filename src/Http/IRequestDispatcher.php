@@ -27,6 +27,13 @@ interface IRequestDispatcher
     public function setSessionId($sessionId): void;
 
     /**
+     * Set base64 combination for basic authentication authorization header
+     *
+     * @param string $base64
+     */
+    public function setBasicAuth(string $base64): void;
+
+    /**
      * Dispatch GET request with Content-Type and Accept JSON
      *
      * @param  string $uri
