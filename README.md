@@ -151,12 +151,12 @@ Before using Tempo features, check with your admin whether it is installed on yo
 #### Attributes Command
 Use `tempo:attributes` to save custom attributes added by your Jira admin.
 ```bash
-php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}'
+php jiralogger tempo:attributes '{"_Role_": {"name": "Role","value": "Developer","workAttributeId": 2},"_Account_": {"name": "Account","value": "PROJ","workAttributeId": 3}}'
 ```
 By default, attributes are saved under `default` group name.
 While you can provide different attributes with different group names.
 ```bash
-php jiralogger tempo:attributes '{"attributes":{"_Role_":{"name":"Role","value":"Developer"}}}' -g mygroup
+php jiralogger tempo:attributes '{"_Role_": {"name": "Role","value": "Developer","workAttributeId": 2},"_Account_": {"name": "Account","value": "PROJ","workAttributeId": 3}}' -g mygroup
 ```
 
 #### Attributes List Command
