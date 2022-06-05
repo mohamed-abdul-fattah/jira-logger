@@ -3,8 +3,7 @@ services:
   php-cli:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: jira-logger-cli:1.0.0
+    image: jira-logger-cli:1.0.1
     container_name: jiralogger-cli
     tty: true
     stdin_open: true
