@@ -2,6 +2,7 @@
 
 namespace App\Services\Connect;
 
+use DateTime;
 use Exception;
 use PDOException;
 use App\Entities\Task;
@@ -248,6 +249,7 @@ class JiraConnect implements IConnect
         return [
             'comment'          => $task->getDescription(),
             'timeSpentSeconds' => $task->logInSeconds(),
+            'started'          => (new DateTime($task->getStartedAt()))->format('Y-m-d\TH:i:s\.000+0000'),
         ];
     }
 
