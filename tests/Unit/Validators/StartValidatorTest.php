@@ -27,6 +27,7 @@ class StartValidatorTest extends TestCase
             ['Issue-8', 'string', null, 'Time must be in hh:ii format'],
             ['Issue-8', '1:01', null, 'Time must be in hh:ii format'],
             ['Issue-8', '01:0', null, 'Time must be in hh:ii format'],
+            ['Issue-53', '10:10AM', null, 'Time must be in hh:ii format'],
             ['Issue-8', null, 1, 'Description must be a string'],
             ['Issue-8', null, [1], 'Description must be a string'],
         ];
