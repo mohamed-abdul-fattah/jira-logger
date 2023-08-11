@@ -74,7 +74,7 @@ class StartValidator
         if (isset($this->time)) {
             if (! is_string($this->time)) {
                 throw new RunTimeException('Time must be a string');
-            } elseif (! preg_match('/^\d{2}:\d{2}/', $this->time)) {
+            } elseif (! preg_match('/^\d{2}:\d{2}$/', $this->time)) {
                 throw new RunTimeException('Time must be in hh:ii format');
             }
         }
